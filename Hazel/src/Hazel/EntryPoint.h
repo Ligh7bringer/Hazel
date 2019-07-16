@@ -6,8 +6,8 @@ extern Hazel::Application* Hazel::CreateApplication();
 
 int main(int argc, char** argv) {
 	Hazel::Log::Init();
-	HZ_CORE_WARN("Initialised engine logger!");
-	HZ_INFO("Initialised client logger!");
+	HZ_CORE_WARN("Initialised logger!");
+	HZ_INFO("Initialised logger!");
 
 	auto app = Hazel::CreateApplication();
 	app->Run();

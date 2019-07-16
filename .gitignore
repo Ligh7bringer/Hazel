@@ -384,3 +384,8 @@ MigrationBackup/
 ## Custom files ##
 bin/
 bin-int
+# files spawned by visual studio
+*.vcxproj
+*.filters
+*.user
+*.sln
