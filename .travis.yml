@@ -3,6 +3,8 @@ os: linux
 dist: xenial
 
 before_install:
+  - sudo apt-get update
+  - sudo apt-get install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglew-dev
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-linux.tar.gz -O premake.tar.gz
   - tar -xf premake.tar.gz
 

@@ -1,26 +1,24 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include "Hazel/Events/KeyEvent.h"
 #include "Log.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Hazel {
 
-	Application::Application()
-	{
+	Application::Application() {
+		m_Window = std::unique_ptr<Window>(Window::Create());
 	}
 
-	Application::~Application()
-	{
+	Application::~Application() {
 	}
 
 	void Application::Run()
 	{
-		KeyPressedEvent e(5, 5);
-		if(e.isInCategory(EventCategoryKeyboard))
-			HZ_TRACE(e);
-
-		while (true);
+		while (true) {
+			m_Window->OnUpdate();
+		}
 	}
 
 }

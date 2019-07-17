@@ -116,6 +116,20 @@ project "Sandbox"
 		staticruntime "On"
 		systemversion "latest"
 
+		links
+		{
+			"Hazel",
+			"GLFW",
+			"Xrandr",
+			"Xi",
+			"GLEW",
+			"GLU",
+			"GL",
+			"X11",
+			"dl",
+			"pthread"
+		}
+
 		defines {
 			"HZ_PLATFORM_LINUX"
 		}
