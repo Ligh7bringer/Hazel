@@ -1,0 +1,32 @@
+language: generic
+os: linux
+dist: xenial
+
+before_install:
+  - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-linux.tar.gz -O premake.tar.gz
+  - tar -xf premake.tar.gz
+
+matrix:
+  include:
+  - compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-9']
+    env:
+      - CXX=g++-9
+
+  - compiler: clang
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+        packages: ['clang-8', 'g++-8']
+    env:
+      - CXX=clang++-8
+
+before_script: 
+  - ./premake5 gmake2 
+
+script:
+  - make
+ 
