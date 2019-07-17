@@ -1,0 +1,26 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+
+configuration:
+- Release
+
+# cache:
+# - bin/lib -> appveyor.yml
+
+before_build:
+  # Clone libs
+  - cmd: git submodule update --init --recursive
+    
+  # Download Premake
+  - ps: Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip' 'premake.zip'
+
+  # Extract it at the top level
+  - cmd: 7z x premake.zip
+
+  # Generate solution
+  - cmd: premake5.exe vs2019
+
+build:
+  project: Hazel.sln
+  parallel: true
+  verbosity: minimal

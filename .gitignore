@@ -389,3 +389,6 @@ bin-int
 *.filters
 *.user
 *.sln
+
+# linux stuff
+Makefile

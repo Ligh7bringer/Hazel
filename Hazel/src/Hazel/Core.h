@@ -6,7 +6,7 @@
 	#else 
 		#define HAZEL_API __declspec(dllimport)
 	#endif // HZ_BUILD_DLL
-#elif defined(__GNUC__)
+#elif HZ_PLATFORM_LINUX
 	#ifdef HZ_BUILD_DLL
 		#define HAZEL_API __attribute__((visibility("default")))
 	#else 

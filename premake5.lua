@@ -26,7 +26,19 @@ project	"Hazel"
 		"%{prj.name}/vendor/spdlog/include"
 	}
 
+	filter "system:linux"
+	printf("Generating linux makefiles...")
+	cppdialect "C++17"
+	staticruntime "On"
+	systemversion "latest"
+
+	defines {
+		"HZ_PLATFORM_LINUX",
+		"HZ_BUILD_DLL"
+	}
+
 	filter "system:windows"
+		printf("Generating visual studio solution...")
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -69,6 +81,20 @@ project "Sandbox"
 	links {
 		"Hazel"
 	}
+
+	filter "system:linux"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines {
+			"HZ_PLATFORM_LINUX"
+		}
+
+		postbuildcommands
+		{
+			("cp ../bin/" .. outputdir .. "/Hazel/libHazel.so" .. " ../bin/" .. outputdir .. "/%{prj.name}")
+		}
 
 	filter "system:windows"
 		cppdialect "C++17"
