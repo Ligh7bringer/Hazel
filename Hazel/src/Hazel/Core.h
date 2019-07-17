@@ -16,3 +16,5 @@
 	// unsupported platform, do nothing
 	#define HAZEL_API
 #endif
+
+#define BIT(x) (1 << x)

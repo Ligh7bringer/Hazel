@@ -23,22 +23,21 @@ project	"Hazel"
 	}
 
 	includedirs {
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 
 	filter "system:linux"
-	printf("Generating linux makefiles...")
-	cppdialect "C++17"
-	staticruntime "On"
-	systemversion "latest"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
 
-	defines {
-		"HZ_PLATFORM_LINUX",
-		"HZ_BUILD_DLL"
-	}
+		defines {
+			"HZ_PLATFORM_LINUX",
+			"HZ_BUILD_DLL"
+		}
 
 	filter "system:windows"
-		printf("Generating visual studio solution...")
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
