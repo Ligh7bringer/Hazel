@@ -9,6 +9,12 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+
+-- include GLFW's premake5.lua file
+include "Hazel/vendor/GLFW"
+
 project	"Hazel"
 	location "Hazel"
 	kind "SharedLib"
@@ -27,7 +33,12 @@ project	"Hazel"
 
 	includedirs {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links {
+		"GLFW"
 	}
 
 	filter "system:linux"
@@ -35,15 +46,31 @@ project	"Hazel"
 		staticruntime "On"
 		systemversion "latest"
 
+		links 
+		{ 
+			"Xrandr",
+			"Xi",
+			"GLEW",
+			"GLU",
+			"GL",
+			"X11"
+		}
+
 		defines {
 			"HZ_PLATFORM_LINUX",
-			"HZ_BUILD_DLL"
+			"HZ_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
+
+		links 
+		{ 
+			"opengl32.lib"
+		}
 
 		defines {
 			"HZ_PLATFORM_WINDOWS",
