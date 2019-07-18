@@ -1,8 +1,6 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include <GLFW/glfw3.h>
-
 namespace Hazel {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -24,8 +22,6 @@ namespace Hazel {
 	void Application::Run()
 	{
 		while (m_Running) {
-			glClearColor(0, 1, 0.3f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
 			m_Window->OnUpdate();
 		}
 	}
