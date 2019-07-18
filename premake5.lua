@@ -19,6 +19,7 @@ project	"Hazel"
 	location "Hazel"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -43,7 +44,6 @@ project	"Hazel"
 
 	filter "system:linux"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		links 
@@ -64,7 +64,6 @@ project	"Hazel"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		links 
@@ -93,6 +92,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -113,7 +113,6 @@ project "Sandbox"
 
 	filter "system:linux"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		links
@@ -141,7 +140,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines {
