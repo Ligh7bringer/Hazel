@@ -1,22 +1,30 @@
 #pragma once
 
-#ifdef HZ_PLATFORM_WINDOWS
-	//#ifdef HZ_BUILD_DLL
-	//	#define HAZEL_API __declspec(dllexport)
-	//#else 
-	//	#define HAZEL_API __declspec(dllimport)
-	//#endif // HZ_BUILD_DLL
-	#define HAZEL_API
-#elif HZ_PLATFORM_LINUX
-	//#ifdef HZ_BUILD_DLL
-	//	#define HAZEL_API __attribute__((visibility("default")))
-	//#else 
-	//	#define HAZEL_API 
-	//#endif // HZ_BUILD_DLL
-	#define HAZEL_API
-#else 
-	// unsupported platform, do nothing
-	#define HAZEL_API
+// Provide dynamic library options for Windows and Linux
+#if defined HZ_PLATFORM_WINDOWS
+	#if defined HZ_DYNAMIC_LINK
+		#if defined HZ_BUILD_DLL
+			#define HAZEL_API __declspec(dllexport)
+		#else
+			#define HAZEL_API __declspec(dllimport)
+		#endif
+	#else
+		#define HAZEL_API
+	#endif
+
+#elif defined HZ_PLATFORM_LINUX
+	#if defined HZ_DYNAMIC_LINK
+		#if defined HZ_BUILD_DLL
+			#define HAZEL_API __attribute__((visibility("default")))
+		#else
+			#define HAZEL_API
+		#endif
+	#else
+		#define HAZEL_API
+	#endif
+
+#else
+	#error Unsupported platform!
 #endif
 
 // Debug settings
@@ -38,6 +46,7 @@
 #else
 	#define HZ_ASSERT(x, ...)
 	#define HZ_CORE_ASSERT(x, ...)
-#endif // End of Assert statements
+#endif 
 
+// bit shifting macro
 #define BIT(x) (1 << x)
