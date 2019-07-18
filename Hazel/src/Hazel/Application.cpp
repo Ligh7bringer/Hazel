@@ -1,6 +1,8 @@
 #include "hzpch.h"
 #include "Application.h"
 
+#include <glad/glad.h>
+
 namespace Hazel {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -36,6 +38,9 @@ namespace Hazel {
 	void Application::Run()
 	{
 		while (m_Running) {
+			glClearColor(0, 1, 0.3, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 

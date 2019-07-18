@@ -1,7 +1,9 @@
 workspace "Hazel"
 	architecture "x64"
-	
-	configurations {
+	startproject "Sandbox"
+
+	configurations
+	{
 		"Debug",
 		"Release",
 		"Dist"
@@ -9,17 +11,23 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 
--- include GLFW's premake5.lua file
-include "Hazel/vendor/GLFW"
+group "Dependencies"
+	include "Hazel/vendor/GLFW"
+	include "Hazel/vendor/Glad"
 
-project	"Hazel"
+group ""
+
+project "Hazel"
 	location "Hazel"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "Off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -27,24 +35,33 @@ project	"Hazel"
 	pchheader "hzpch.h"
 	pchsource "Hazel/src/hzpch.cpp"
 
-	files {
+	files
+	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs {
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
-	links {
-		"GLFW"
+	includedirs
+	{
+		"%{prj.name}/src",
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
+	}
+
+	links 
+	{
+		"GLFW",
+		"Glad"
 	}
 
 	filter "system:linux"
-		cppdialect "C++17"
-		systemversion "latest"
+--		pic "on"
 
 		links 
 		{ 
@@ -56,14 +73,13 @@ project	"Hazel"
 			"X11"
 		}
 
-		defines {
+		defines
+		{
 			"HZ_PLATFORM_LINUX",
-			"HZ_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"HZ_BUILD_DLL"
 		}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 
 		links 
@@ -71,54 +87,57 @@ project	"Hazel"
 			"opengl32.lib"
 		}
 
-		defines {
+		defines
+		{
 			"HZ_PLATFORM_WINDOWS",
-			"HZ_BUILD_DLL"
+			"HZ_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		optimize "On"
+		runtime "Release"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		optimize "On"
+		runtime "Release"
+		optimize "on"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "Off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files {
+	files
+	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs {
+	includedirs
+	{
 		"Hazel/vendor/spdlog/include",
-		"Hazel/src"
-	}
-
-	links {
-		"Hazel"
+		"Hazel/src",
+		"Hazel/vendor"
 	}
 
 	filter "system:linux"
-		cppdialect "C++17"
-		systemversion "latest"
-
 		links
 		{
 			"Hazel",
 			"GLFW",
+			"Glad",
 			"Xrandr",
 			"Xi",
 			"GLEW",
@@ -126,39 +145,35 @@ project "Sandbox"
 			"GL",
 			"X11",
 			"dl",
-			"pthread"
+			"pthread",
 		}
-
-		defines {
+		defines
+		{
 			"HZ_PLATFORM_LINUX"
 		}
 
-		postbuildcommands
-		{
-			("cp ../bin/" .. outputdir .. "/Hazel/libHazel.so" .. " ../bin/" .. outputdir .. "/%{prj.name}")
-		}
-
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
-
-		defines {
-			"HZ_PLATFORM_WINDOWS"
-		}
-
-		postbuildcommands
+		links
 		{
-			("{COPY} ../bin/" .. outputdir .. "/Hazel/Hazel.dll" .. " ../bin/" .. outputdir .. "/%{prj.name}")
+			"Hazel",
+		}
+		defines
+		{
+			"HZ_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
-		symbols "On"
+		runtime "Debug"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
-		optimize "On"
+		runtime "Release"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
-		optimize "On"
+		runtime "Release"
+		optimize "on"
