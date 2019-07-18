@@ -18,8 +18,8 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(MouseMoved);
-		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
+		EVENT_CLASS_TYPE(MouseMoved)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	private:
 		float m_MouseX, m_MouseY;
@@ -39,8 +39,8 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(MouseScrolled);
-		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
+		EVENT_CLASS_TYPE(MouseScrolled)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	private:
 		float m_XOffset, m_YOffset;
@@ -73,7 +73,7 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(MouseButtonPressed)
+		EVENT_CLASS_TYPE(MouseBtnPressed)
 	};
 
 	class HAZEL_API MouseButtonReleasedEvent : public MouseButtonEvent
@@ -89,7 +89,7 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(MouseButtonReleased)
+		EVENT_CLASS_TYPE(MouseBtnReleased)
 	};
 
 }
