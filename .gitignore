@@ -392,3 +392,5 @@ bin-int
 
 # linux stuff
 Makefile
+
+imgui.ini
