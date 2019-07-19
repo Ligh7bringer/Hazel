@@ -4,9 +4,10 @@
 [submodule "Hazel/vendor/GLFW"]
 	path = Hazel/vendor/GLFW
 	url = https://github.com/Ligh7bringer/glfw.git
-[submodule "Hazel/vendor/imgui"]
-	path = Hazel/vendor/imgui
-	url = https://github.com/marian-bielcik/imgui.git
 [submodule "Hazel/vendor/glm"]
 	path = Hazel/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Hazel/vendor/imgui"]
+	path = Hazel/vendor/imgui
+	url = https://github.com/TheCherno/imgui.git
+	branch = docking
