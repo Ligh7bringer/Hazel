@@ -1,5 +1,6 @@
 #include "hzpch.h"
 #include "Application.h"
+#include "Input.h"
 
 #include <glad/glad.h>
 
@@ -45,6 +46,9 @@ namespace Hazel {
 	void Application::Run()
 	{
 		while (m_Running) {
+			auto[x, y] = Input::GetMousePos();
+			HZ_CORE_TRACE("MousePos: {0}, {1}", x, y);
+
 			glClearColor(0, 1, 0.3, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
