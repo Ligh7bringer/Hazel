@@ -19,18 +19,9 @@ namespace Hazel {
 		virtual void OnImGuiRender() override;
 
 		void Begin();
-		void End();
-
-		struct CameraProperties {
-			glm::vec3 Position{ 0.f, 0.f, 0.f };
-			float Rotation = 0.f;
-			glm::vec4 SquareColour{ 0.2f, 0.3f, 0.8f, 1.0f };
-		};
-
-		const CameraProperties& GetCameraProperties() const { return m_CameraProps; }
+		void End();		
 
 	private:
-		CameraProperties m_CameraProps;
 		float m_Time = 0.0f;
 	};
 
