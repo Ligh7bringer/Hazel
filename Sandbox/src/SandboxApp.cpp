@@ -22,8 +22,8 @@ public:
 	}
 
 	void OnImGuiRender() override {
-		ImGui::Begin("Test");
-		ImGui::Text("Hello World!");
+		ImGui::Begin("FPS");
+		ImGui::Text("%.3f ms/frame\n%.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
 };

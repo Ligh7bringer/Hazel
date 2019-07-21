@@ -71,9 +71,20 @@ namespace Hazel {
 		}
 	}
 
-	void ImGuiLayer::OnImGuiRender() {
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+	void ImGuiLayer::OnImGuiRender() {		
+		ImGui::BeginGroup();
+		ImGui::Text("Camera position");
+		ImGui::SliderFloat("Position.X", &m_CameraProps.Position.x, -2.f, 2.0f);
+		ImGui::SliderFloat("Position.Y", &m_CameraProps.Position.y, -2.f, 2.0f);
+		ImGui::SliderFloat("Position.Z", &m_CameraProps.Position.z, -2.f, 2.0f);
+		ImGui::EndGroup();
+
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+		ImGui::BeginGroup();
+		ImGui::Text("Camera rotation");
+		ImGui::SliderFloat("Rotation.Z", &m_CameraProps.Rotation, 0.0f, 360.f);
+		ImGui::EndGroup();
 	}
 
 }

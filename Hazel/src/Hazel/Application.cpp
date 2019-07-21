@@ -146,8 +146,9 @@ namespace Hazel {
 			RenderCommand::SetClearColor({ 0.1f, 0.2f, 0.2f, 1 });
 			RenderCommand::Clear();
 
-			m_Camera.SetPosition({ 0.5f, 0.5f, 0.0f });
-			m_Camera.SetRotation(45.0f);
+			const Hazel::ImGuiLayer::CameraProperties& cameraProps = m_ImGuiLayer->GetCameraProperties();
+			m_Camera.SetPosition(cameraProps.Position);
+			m_Camera.SetRotation(cameraProps.Rotation);
 
 			Renderer::BeginScene(m_Camera);
 
