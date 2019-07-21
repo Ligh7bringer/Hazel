@@ -392,5 +392,6 @@ bin-int
 
 # linux stuff
 Makefile
+.vscode
 
 imgui.ini
