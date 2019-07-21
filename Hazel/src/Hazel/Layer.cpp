@@ -5,8 +5,6 @@ namespace Hazel {
 
 	Layer::Layer(const std::string& name) : m_DebugName(name) {}
 
-	Layer::~Layer() {}
-
 	void Layer::OnAttach() {}
 	void Layer::OnDetach() {}
 	void Layer::OnUpdate() {}

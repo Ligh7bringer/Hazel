@@ -12,8 +12,6 @@ namespace Hazel {
 
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
-	ImGuiLayer::~ImGuiLayer() {}
-
 	void ImGuiLayer::OnAttach()	{
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
