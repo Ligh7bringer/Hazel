@@ -5,6 +5,8 @@
 #include "Hazel/ImGui/ImGuiLayer.h"	
 #include "Hazel/Log.h"
 
+#include "Hazel/Core/Timestep.h"
+
 #include "Hazel/Input.h"
 #include "Hazel/KeyCodes.h"
 #include "Hazel/MouseBtnCodes.h"

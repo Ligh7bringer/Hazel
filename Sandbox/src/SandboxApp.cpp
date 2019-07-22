@@ -105,21 +105,23 @@ public:
 		m_ShaderSqr.reset(Hazel::Shader::Create(blueShaderVertexSrc, blueShaderFragmentSrc));
 	}
 
-	void OnUpdate() override {
+	void OnUpdate(Hazel::Timestep dt) override {
+		float time = dt;
+
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_A))
-			m_GUIProps.Position.x -= m_CameraSpeed;
+			m_GUIProps.Position.x -= m_CameraSpeed * dt;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
-			m_GUIProps.Position.x += m_CameraSpeed;
+			m_GUIProps.Position.x += m_CameraSpeed * dt;
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_W))
-			m_GUIProps.Position.y += m_CameraSpeed;
+			m_GUIProps.Position.y += m_CameraSpeed * dt;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_S))
-			m_GUIProps.Position.y -= m_CameraSpeed;
+			m_GUIProps.Position.y -= m_CameraSpeed * dt;
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_Y))
-			m_GUIProps.Rotation += 4.f * m_CameraSpeed;
+			m_GUIProps.Rotation += m_CameraRotationSpeed * dt;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_T))
-			m_GUIProps.Rotation -= 6.f * m_CameraSpeed;
+			m_GUIProps.Rotation -= m_CameraRotationSpeed * dt;
 
 		Hazel::RenderCommand::SetClearColor(m_GUIProps.ClearColour);
 		Hazel::RenderCommand::Clear();
@@ -178,7 +180,8 @@ private:
 
 	Hazel::OrthographicCamera m_Camera;
 	GUIProperties m_GUIProps;
-	float m_CameraSpeed = 0.1f;
+	float m_CameraSpeed = 1.f;
+	float m_CameraRotationSpeed = 30.f;
 };
 
 class Sandbox : public Hazel::Application {

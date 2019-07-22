@@ -50,7 +50,7 @@ namespace Hazel {
 		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
+		SetVSync(false);
 
 		/* GLFW callbacks: */
 		// window resized
@@ -155,7 +155,7 @@ namespace Hazel {
 		if (enabled)
 			glfwSwapInterval(1);
 		else
-			glfwSwapInterval(1);
+			glfwSwapInterval(0);
 
 		m_Data.VSync = enabled;
 	}

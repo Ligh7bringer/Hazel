@@ -7,7 +7,7 @@ namespace Hazel {
 
 	void Layer::OnAttach() {}
 	void Layer::OnDetach() {}
-	void Layer::OnUpdate() {}
+	void Layer::OnUpdate(Timestep dt) {}
 	void Layer::OnImGuiRender() {}
 	void Layer::OnEvent(Event& event) {}
 
