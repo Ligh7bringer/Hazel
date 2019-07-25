@@ -7,7 +7,7 @@ extern Hazel::Application* Hazel::CreateApplication();
 
 int main(int argc, char** argv) {
 	Hazel::Log::Init();
-	HZ_CORE_WARN("Initialised logger!");
+	HZ_CORE_INFO("Initialised logger!");
 	HZ_INFO("Initialised logger!");
 
 	auto app = Hazel::CreateApplication();
