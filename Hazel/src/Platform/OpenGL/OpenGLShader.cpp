@@ -23,31 +23,32 @@ Hazel::OpenGLShader::~OpenGLShader() {
 
 void Hazel::OpenGLShader::ReadFiles(const std::string& vertexPath, const std::string& fragmentPath)
 {
-	// 1. retrieve the vertex/fragment source code from filePath
-	std::string vertexCode;
-	std::string fragmentCode;
+	// read shaders
+	std::string vertexCode = ReadFile(vertexPath);
+	std::string fragmentCode = ReadFile(fragmentPath);
 
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-	
-	// open files
-	vShaderFile.open(vertexPath);
-	fShaderFile.open(fragmentPath);
-	std::stringstream vShaderStream, fShaderStream;
-	// read file's buffer contents into streams
-	vShaderStream << vShaderFile.rdbuf();
-	fShaderStream << fShaderFile.rdbuf();
-	// close file handlers
-	vShaderFile.close();
-	fShaderFile.close();
-	// convert stream into string
-	vertexCode = vShaderStream.str();
-	fragmentCode = fShaderStream.str();
-
+	// make sure reading succeeded
 	HZ_ASSERT(!vertexCode.empty(), "Error reading vertex shader " + vertexPath);
 	HZ_ASSERT(!fragmentCode.empty(), "Error reading fragment shader " + fragmentPath);
 
+	// compile shaders
 	CompileShaders(vertexCode, fragmentCode);
+}
+
+std::string Hazel::OpenGLShader::ReadFile(const std::string& filepath) {
+	FILE* file = fopen(filepath.c_str(), "rt");
+	fseek(file, 0, SEEK_END);
+	unsigned long length = ftell(file);
+	char* data = new char[length + 1];
+	memset(data, 0, length + 1);
+	fseek(file, 0, SEEK_SET);
+	fread(data, 1, length, file);
+	fclose(file);
+
+	std::string result(data);
+	delete[] data;
+	
+	return result;
 }
 
 void Hazel::OpenGLShader::CompileShaders(const std::string& vertexSrc, const std::string& fragmentSrc)

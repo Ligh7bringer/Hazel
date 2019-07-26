@@ -17,6 +17,7 @@ namespace Hazel {
 	private:
 		void CompileShaders(const std::string& vertexSrc, const std::string& fragmentSrc);
 		void ReadFiles(const std::string& vertexPath, const std::string& fragmentPath);
+		std::string ReadFile(const std::string& filepath);
 
 	private:
 		uint32_t m_RendererID;
