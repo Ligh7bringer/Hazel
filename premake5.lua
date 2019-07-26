@@ -171,7 +171,7 @@ project "Sandbox"
 		defines
 		{
 			"HZ_PLATFORM_WINDOWS"
-		}
+		}	
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"

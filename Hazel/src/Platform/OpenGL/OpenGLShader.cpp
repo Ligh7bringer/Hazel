@@ -5,8 +5,53 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-Hazel::OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc) 
+#include <fstream>
+
+Hazel::OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc, bool fromFile)
 	: m_RendererID(-1) {
+
+	if (!fromFile) {
+		CompileShaders(vertexSrc, fragmentSrc); 
+	} else {
+		ReadFiles(vertexSrc, fragmentSrc);
+	}
+}
+
+Hazel::OpenGLShader::~OpenGLShader() {
+	glDeleteProgram(m_RendererID);
+}
+
+void Hazel::OpenGLShader::ReadFiles(const std::string& vertexPath, const std::string& fragmentPath)
+{
+	// 1. retrieve the vertex/fragment source code from filePath
+	std::string vertexCode;
+	std::string fragmentCode;
+
+	std::ifstream vShaderFile;
+	std::ifstream fShaderFile;
+	
+	// open files
+	vShaderFile.open(vertexPath);
+	fShaderFile.open(fragmentPath);
+	std::stringstream vShaderStream, fShaderStream;
+	// read file's buffer contents into streams
+	vShaderStream << vShaderFile.rdbuf();
+	fShaderStream << fShaderFile.rdbuf();
+	// close file handlers
+	vShaderFile.close();
+	fShaderFile.close();
+	// convert stream into string
+	vertexCode = vShaderStream.str();
+	fragmentCode = fShaderStream.str();
+
+	HZ_ASSERT(!vertexCode.empty(), "Error reading vertex shader " + vertexPath);
+	HZ_ASSERT(!fragmentCode.empty(), "Error reading fragment shader " + fragmentPath);
+
+	CompileShaders(vertexCode, fragmentCode);
+}
+
+void Hazel::OpenGLShader::CompileShaders(const std::string& vertexSrc, const std::string& fragmentSrc)
+{
 	// Create an empty vertex shader handle
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -110,10 +155,6 @@ Hazel::OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::strin
 	// Always detach shaders after a successful link.
 	glDetachShader(program, vertexShader);
 	glDetachShader(program, fragmentShader);
-}
-
-Hazel::OpenGLShader::~OpenGLShader() {
-	glDeleteProgram(m_RendererID);
 }
 
 void Hazel::OpenGLShader::Bind() const {
