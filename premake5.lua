@@ -172,14 +172,12 @@ project "Sandbox"
 		{
 			"HZ_PLATFORM_WINDOWS"
 		}
+		debugdir "$(TargetDir)"
 		
 	postbuildcommands 
 	{
 		"{COPY} %{wks.location}/res  %{wks.location}/bin/" .. outputdir .. "/Sandbox/res"
-	}
-
-	filter { "system:windows", "configurations:Debug" }
-		debugdir "$(TargetDir)"
+	}	
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"

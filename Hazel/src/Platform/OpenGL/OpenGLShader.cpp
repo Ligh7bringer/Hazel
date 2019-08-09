@@ -30,16 +30,14 @@ namespace Hazel {
 		std::string vertexCode = ReadFile(vertexPath);
 		std::string fragmentCode = ReadFile(fragmentPath);
 
-		// make sure reading succeeded
-		HZ_ASSERT(!vertexCode.empty(), "Error reading vertex shader " + vertexPath);
-		HZ_ASSERT(!fragmentCode.empty(), "Error reading fragment shader " + fragmentPath);
-
 		// compile shaders
 		CompileShaders(vertexCode, fragmentCode);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath) {
 		FILE* file = fopen(filepath.c_str(), "rt");
+		// TO DO: add a check here to see if the file was opened
+		// successfully before doing anything else
 		fseek(file, 0, SEEK_END);
 		unsigned long length = ftell(file);
 		char* data = new char[length + 1];
@@ -50,6 +48,8 @@ namespace Hazel {
 
 		std::string result(data);
 		delete[] data;
+
+		HZ_ASSERT(!result.empty(), "Error reading shader " + filepath);
 
 		return result;
 	}

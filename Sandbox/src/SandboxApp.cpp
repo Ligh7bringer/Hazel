@@ -104,28 +104,28 @@ public:
 	void OnEvent(Hazel::Event& evt) override {}
 
 	void OnImGuiRender() override {
-		//ImGui::Begin("FPS");
-		//ImGui::Text("%.3f ms/frame\n%.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		//ImGui::End();
+		ImGui::Begin("FPS");
+		ImGui::Text("%.3f ms/frame\n%.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
 
-		//ImGui::Begin("Settings");
-		//ImGui::Text("Camera position");
-		//ImGui::SliderFloat("Position.X", &m_GUIProps.Position.x, -2.f, 2.0f);
-		//ImGui::SliderFloat("Position.Y", &m_GUIProps.Position.y, -2.f, 2.0f);
-		//ImGui::SliderFloat("Position.Z", &m_GUIProps.Position.z, -2.f, 2.0f);
+		ImGui::Begin("Settings");
+		ImGui::Text("Camera position");
+		ImGui::SliderFloat("Position.X", &m_GUIProps.Position.x, -2.f, 2.0f);
+		ImGui::SliderFloat("Position.Y", &m_GUIProps.Position.y, -2.f, 2.0f);
+		ImGui::SliderFloat("Position.Z", &m_GUIProps.Position.z, -2.f, 2.0f);
 
-		//ImGui::Dummy(ImVec2(0.0f, 20.0f));
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-		//ImGui::Text("Camera rotation");
-		//ImGui::SliderFloat("Rotation.Z", &m_GUIProps.Rotation, 0.0f, 360.f);
+		ImGui::Text("Camera rotation");
+		ImGui::SliderFloat("Rotation.Z", &m_GUIProps.Rotation, 0.0f, 360.f);
 
-		//ImGui::Dummy(ImVec2(0.0f, 20.0f));
+		ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-		//static ImVec4 color = ImVec4(0.1f, 0.2f, 0.2f, 1.f);
-		//ImGui::Text("Clear colour:");
-		//ImGui::ColorEdit4("glClearColor##2f", (float*)& m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);		
-		//ImGui::ColorEdit4("Square colour:", glm::value_ptr(m_SquareColor));
-		//ImGui::End();
+		static ImVec4 color = ImVec4(0.1f, 0.2f, 0.2f, 1.f);
+		ImGui::Text("Clear colour:");
+		ImGui::ColorEdit4("glClearColor##2f", (float*)& m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);		
+		ImGui::ColorEdit4("Square colour:", glm::value_ptr(m_SquareColor));
+		ImGui::End();
 	}
 
 	struct GUIProperties {
