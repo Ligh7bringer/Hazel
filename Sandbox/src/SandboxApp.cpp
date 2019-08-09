@@ -1,7 +1,10 @@
 #include <Hazel.h>
+#include "Platform/OpenGL/OpenGLShader.h"
+
 #include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Hazel::Layer {
 public:
@@ -51,7 +54,7 @@ public:
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		m_Shader.reset(Hazel::Shader::FromFile("res/shaders/basic.vert", "res/shaders/basic.frag"));
-		m_ShaderSqr.reset(Hazel::Shader::FromFile("res/shaders/blue.vert", "res/shaders/blue.frag"));
+		m_FlatColShader.reset(Hazel::Shader::FromFile("res/shaders/flatCol.vert", "res/shaders/flatCol.frag"));
 	}
 
 	void OnUpdate(Hazel::Timestep dt) override {
@@ -82,12 +85,14 @@ public:
 
 		static glm::mat4 scale = glm::scale(glm::mat4(1.f), glm::vec3(0.1f));
 
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColShader)->UploadUniformFloat4("u_Colour", m_SquareColor);
+
 		for (int y = 0; y < 20; ++y) {
 			for (int x = 0; x < 20; ++x) {
 				glm::vec3 position(x * 0.11f, y * 0.11f, 0.f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * scale;
-
-				Hazel::Renderer::Submit(m_ShaderSqr, m_SquareVA, transform);
+				Hazel::Renderer::Submit(m_FlatColShader, m_SquareVA, transform);
 			}
 		}
 		
@@ -99,48 +104,49 @@ public:
 	void OnEvent(Hazel::Event& evt) override {}
 
 	void OnImGuiRender() override {
-		ImGui::Begin("FPS");
-		ImGui::Text("%.3f ms/frame\n%.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
+		//ImGui::Begin("FPS");
+		//ImGui::Text("%.3f ms/frame\n%.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		//ImGui::End();
 
-		ImGui::BeginGroup();
-		ImGui::Text("Camera position");
-		ImGui::SliderFloat("Position.X", &m_GUIProps.Position.x, -2.f, 2.0f);
-		ImGui::SliderFloat("Position.Y", &m_GUIProps.Position.y, -2.f, 2.0f);
-		ImGui::SliderFloat("Position.Z", &m_GUIProps.Position.z, -2.f, 2.0f);
-		ImGui::EndGroup();
+		//ImGui::Begin("Settings");
+		//ImGui::Text("Camera position");
+		//ImGui::SliderFloat("Position.X", &m_GUIProps.Position.x, -2.f, 2.0f);
+		//ImGui::SliderFloat("Position.Y", &m_GUIProps.Position.y, -2.f, 2.0f);
+		//ImGui::SliderFloat("Position.Z", &m_GUIProps.Position.z, -2.f, 2.0f);
 
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+		//ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-		ImGui::BeginGroup();
-		ImGui::Text("Camera rotation");
-		ImGui::SliderFloat("Rotation.Z", &m_GUIProps.Rotation, 0.0f, 360.f);
-		ImGui::EndGroup();
+		//ImGui::Text("Camera rotation");
+		//ImGui::SliderFloat("Rotation.Z", &m_GUIProps.Rotation, 0.0f, 360.f);
 
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
+		//ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-		static ImVec4 color = ImVec4(0.1f, 0.2f, 0.2f, 1.f);
-		ImGui::Text("Clear color:");
-		ImGui::ColorEdit4("MyColor##2f", (float*)& m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);		
+		//static ImVec4 color = ImVec4(0.1f, 0.2f, 0.2f, 1.f);
+		//ImGui::Text("Clear colour:");
+		//ImGui::ColorEdit4("glClearColor##2f", (float*)& m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);		
+		//ImGui::ColorEdit4("Square colour:", glm::value_ptr(m_SquareColor));
+		//ImGui::End();
 	}
 
 	struct GUIProperties {
 		glm::vec3 Position{ 0.f, 0.f, 0.f };
 		float Rotation = 0.f;
-		glm::vec4 ClearColour{ 0.16f, 0.19f, 0.3f, 1.0f };
+		glm::vec4 ClearColour{ 0.16f, 0.7f, 0.3f, 1.0f };
 	};
 
 private:
 	std::shared_ptr<Hazel::Shader> m_Shader;
 	std::shared_ptr<Hazel::VertexArray> m_VertexArray;
 					
-	std::shared_ptr<Hazel::Shader> m_ShaderSqr;
+	std::shared_ptr<Hazel::Shader> m_FlatColShader;
 	std::shared_ptr<Hazel::VertexArray> m_SquareVA;
 
 	Hazel::OrthographicCamera m_Camera;
 	GUIProperties m_GUIProps;
 	float m_CameraSpeed = 5.f;
 	float m_CameraRotationSpeed = 30.f;
+
+	glm::vec4 m_SquareColor = { .2f, .3f, .8f, 1.f };
 };
 
 class Sandbox : public Hazel::Application {
