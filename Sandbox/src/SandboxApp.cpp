@@ -34,17 +34,19 @@ public:
 
 		m_SquareVA.reset(Hazel::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.f,
-			 0.5f, -0.5f, 0.f,
-			 0.5f,  0.5f, 0.f,
-			-0.5f,  0.5f, 0.f,
+		float squareVertices[5 * 4] = {
+			// vertices		   // tex coords
+			-0.5f, -0.5f, 0.f, 0.f, 0.f,
+			 0.5f, -0.5f, 0.f, 1.f, 0.f,
+			 0.5f,  0.5f, 0.f, 1.f, 1.f,
+			-0.5f,  0.5f, 0.f, 0.f, 1.f
 		};
 
 		Hazel::Ref<Hazel::VertexBuffer> squareVB;
 		squareVB.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout({
-			{ Hazel::ShaderDataType::Float3, "a_Position" }
+			{ Hazel::ShaderDataType::Float3, "a_Position" },
+			{ Hazel::ShaderDataType::Float2, "a_TexCoord" }
 			});
 		m_SquareVA->AddVertexBuffer(squareVB);
 
@@ -55,6 +57,11 @@ public:
 
 		m_Shader.reset(Hazel::Shader::FromFile("res/shaders/basic.vert", "res/shaders/basic.frag"));
 		m_FlatColShader.reset(Hazel::Shader::FromFile("res/shaders/flatCol.vert", "res/shaders/flatCol.frag"));
+		m_TextureShader.reset(Hazel::Shader::FromFile("res/shaders/texture.vert", "res/shaders/texture.frag"));
+
+		m_Texture = Hazel::Texture2D::Create("res/textures/checker.png");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep dt) override {
@@ -95,8 +102,12 @@ public:
 				Hazel::Renderer::Submit(m_FlatColShader, m_SquareVA, transform);
 			}
 		}
+
+		m_Texture->Bind();
+		Hazel::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
 		
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		// Triangle
+		// Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Hazel::Renderer::EndScene();
 	}
@@ -138,8 +149,10 @@ private:
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 					
-	Hazel::Ref<Hazel::Shader> m_FlatColShader;
+	Hazel::Ref<Hazel::Shader> m_FlatColShader, m_TextureShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCamera m_Camera;
 	GUIProperties m_GUIProps;
