@@ -145,6 +145,11 @@ project "Sandbox"
 		"%{IncludeDir.glm}"
 	}
 
+	postbuildcommands 
+	{
+		"{COPY} %{wks.location}/assets  %{wks.location}/bin/" .. outputdir .. "/Sandbox/assets"
+	}	
+
 	filter "system:linux"
 		links
 		{
@@ -177,11 +182,6 @@ project "Sandbox"
 			"HZ_PLATFORM_WINDOWS"
 		}
 		debugdir "$(TargetDir)"
-		
-	postbuildcommands 
-	{
-		"{COPY} %{wks.location}/res  %{wks.location}/bin/" .. outputdir .. "/Sandbox/res"
-	}	
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"

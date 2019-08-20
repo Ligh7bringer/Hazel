@@ -55,11 +55,11 @@ public:
 		squareIB.reset(Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
-		m_Shader.reset(Hazel::Shader::FromFile("res/shaders/basic.vert", "res/shaders/basic.frag"));
-		m_FlatColShader.reset(Hazel::Shader::FromFile("res/shaders/flatCol.vert", "res/shaders/flatCol.frag"));
-		m_TextureShader.reset(Hazel::Shader::FromFile("res/shaders/texture.vert", "res/shaders/texture.frag"));
+		m_Shader.reset(Hazel::Shader::FromFile("assets/shaders/basic.vert", "assets/shaders/basic.frag"));
+		m_FlatColShader.reset(Hazel::Shader::FromFile("assets/shaders/flatCol.vert", "assets/shaders/flatCol.frag"));
+		m_TextureShader.reset(Hazel::Shader::FromFile("assets/shaders/texture.vert", "assets/shaders/texture.frag"));
 
-		m_Texture = Hazel::Texture2D::Create("res/textures/checker.png");
+		m_Texture = Hazel::Texture2D::Create("assets/textures/checker.png");
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
