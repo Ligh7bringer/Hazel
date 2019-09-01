@@ -4,33 +4,43 @@
 
 #include <glm/glm.hpp>
 
-namespace Hazel {
+#include <unordered_map>
 
-	class OpenGLShader : public Shader {
-	public:
-		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc, bool fromFile = false);
-		virtual ~OpenGLShader();
+// temporary
+typedef unsigned int GLenum;
+using shader_umap = std::unordered_map<GLenum, std::string>;
 
-		virtual void Bind() const override;
-		virtual void Unbind() const override;
+namespace Hazel
+{
 
-		void UploadUniformInt(const std::string& name, int value);
+class OpenGLShader : public Shader
+{
+public:
+	OpenGLShader(const std::string& filepath);
+	OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+	virtual ~OpenGLShader();
 
-		void UploadUniformFloat(const std::string& name, float value);
-		void UploadUniformFloat2(const std::string& name, const glm::vec2& values);
-		void UploadUniformFloat3(const std::string& name, const glm::vec3& values);
-		void UploadUniformFloat4(const std::string& name, const glm::vec4& values);
+	virtual void Bind() const override;
+	virtual void Unbind() const override;
 
-		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
-		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
-		
-	private:
-		void CompileShaders(const std::string& vertexSrc, const std::string& fragmentSrc);
-		void ReadFiles(const std::string& vertexPath, const std::string& fragmentPath);
-		std::string ReadFile(const std::string& filepath);
+	void UploadUniformInt(const std::string& name, int value);
 
-	private:
-		uint32_t m_RendererID;
-	};
+	void UploadUniformFloat(const std::string& name, float value);
+	void UploadUniformFloat2(const std::string& name, const glm::vec2& values);
+	void UploadUniformFloat3(const std::string& name, const glm::vec3& values);
+	void UploadUniformFloat4(const std::string& name, const glm::vec4& values);
 
-}
+	void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
+	void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+
+private:
+	std::string ReadFile(const std::string& filepath);
+	shader_umap PreProcess(const std::string& source);
+	void Compile(const shader_umap& shaderSources);
+
+private:
+	uint32_t m_RendererID;
+	std::string m_ShaderFilepath;
+};
+
+} // namespace Hazel
