@@ -1,6 +1,7 @@
 #pragma once
 
-// taken from glfw (for now TM)
+// clang-format off
+// taken from glfw (for now TM) 
 #define HZ_KEY_SPACE              32
 #define HZ_KEY_APOSTROPHE         39  /* ' */
 #define HZ_KEY_COMMA              44  /* , */

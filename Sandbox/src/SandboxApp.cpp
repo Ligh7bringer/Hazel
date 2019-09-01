@@ -175,15 +175,9 @@ private:
 class Sandbox : public Hazel::Application
 {
 public:
-	Sandbox()
-	{
-		PushLayer(new ExampleLayer());
-	}
+	Sandbox() { PushLayer(new ExampleLayer()); }
 
 	~Sandbox() {}
 };
 
-Hazel::Application* Hazel::CreateApplication()
-{
-	return new Sandbox();
-}
+Hazel::Application* Hazel::CreateApplication() { return new Sandbox(); }

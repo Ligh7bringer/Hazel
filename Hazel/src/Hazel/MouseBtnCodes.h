@@ -1,5 +1,6 @@
 #pragma once
 
+// clang-format off
 // from glfw
 #define HZ_MOUSE_BUTTON_1         0
 #define HZ_MOUSE_BUTTON_2         1

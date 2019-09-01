@@ -12,10 +12,8 @@ namespace Hazel
 
 static GLenum ShaderTypeFromString(const std::string& type, const std::string& filepath)
 {
-	if(type == "vertex")
-		return GL_VERTEX_SHADER;
-	if(type == "fragment" || type == "pixel")
-		return GL_FRAGMENT_SHADER;
+	if(type == "vertex") return GL_VERTEX_SHADER;
+	if(type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
 
 	HZ_CORE_ASSERT(false, "Unknown shader type '" + type + "'");
 	return 0;
@@ -38,10 +36,7 @@ OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& frag
 	Compile(sources);
 }
 
-OpenGLShader::~OpenGLShader()
-{
-	glDeleteProgram(m_RendererID);
-}
+OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
 
 std::string OpenGLShader::ReadFile(const std::string& filepath)
 {
@@ -144,27 +139,19 @@ void OpenGLShader::Compile(const shader_umap& shaderSources)
 
 		glDeleteProgram(program);
 
-		for(auto id : glShaderIDs)
-			glDeleteShader(id);
+		for(auto id : glShaderIDs) glDeleteShader(id);
 
 		HZ_CORE_ERROR("{0}", infoLog.data());
 		HZ_CORE_ASSERT(false, "Shader linking failed!");
 		return;
 	}
 
-	for(auto id : glShaderIDs)
-		glDetachShader(program, id);
+	for(auto id : glShaderIDs) glDetachShader(program, id);
 }
 
-void OpenGLShader::Bind() const
-{
-	glUseProgram(m_RendererID);
-}
+void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
 
-void OpenGLShader::Unbind() const
-{
-	glUseProgram(0);
-}
+void OpenGLShader::Unbind() const { glUseProgram(0); }
 
 void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 {
