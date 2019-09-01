@@ -144,7 +144,7 @@ public:
 		ImGui::Text("Clear colour:");
 		ImGui::ColorEdit4(
 			"glClearColor##2f", (float*)&m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);
-		ImGui::ColorEdit4("Square colour:", glm::value_ptr(m_SquareColor));
+		ImGui::ColorEdit4("Square colour", glm::value_ptr(m_SquareColor));
 		ImGui::End();
 	}
 

@@ -7,146 +7,142 @@
 
 #include <fstream>
 
-namespace Hazel
-{
+namespace Hazel {
 
 static GLenum ShaderTypeFromString(const std::string& type, const std::string& filepath)
 {
-	if(type == "vertex") return GL_VERTEX_SHADER;
-	if(type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
+    if (type == "vertex")
+        return GL_VERTEX_SHADER;
+    if (type == "fragment" || type == "pixel")
+        return GL_FRAGMENT_SHADER;
 
-	HZ_CORE_ASSERT(false, "Unknown shader type '" + type + "'");
-	return 0;
+    HZ_CORE_ASSERT(false, "Unknown shader type '" + type + "'");
+    return 0;
 }
 
 OpenGLShader::OpenGLShader(const std::string& filepath)
-	: m_ShaderFilepath(filepath)
+    : m_ShaderFilepath(filepath)
 {
-	std::string source = ReadFile(filepath);
-	auto shaderSources = PreProcess(source);
-	Compile(shaderSources);
+    std::string source = ReadFile(filepath);
+    auto shaderSources = PreProcess(source);
+    Compile(shaderSources);
 }
 
 OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
-	: m_ShaderFilepath("")
+    : m_ShaderFilepath("")
 {
-	shader_umap sources;
-	sources[GL_VERTEX_SHADER] = vertexSrc;
-	sources[GL_FRAGMENT_SHADER] = fragmentSrc;
-	Compile(sources);
+    shader_umap sources;
+    sources[GL_VERTEX_SHADER] = vertexSrc;
+    sources[GL_FRAGMENT_SHADER] = fragmentSrc;
+    Compile(sources);
 }
 
 OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
 
 std::string OpenGLShader::ReadFile(const std::string& filepath)
 {
-	std::string result;
-	std::ifstream in(filepath, std::ios::in, std::ios::binary);
-	if(in)
-	{
-		in.seekg(0, std::ios::end);
-		result.resize(in.tellg());
-		in.seekg(0, std::ios::beg);
-		in.read(&result[0], result.size());
-		in.close();
-	}
-	else
-	{
-		HZ_CORE_ERROR("Could not open shader file '{0}'", filepath);
-	}
+    std::string result;
+    std::ifstream in(filepath, std::ios::in);
+    if (in) {
+        in.seekg(0, std::ios::end);
+        result.resize(in.tellg());
+        in.seekg(0, std::ios::beg);
+        in.read(&result[0], result.size());
+        in.close();
+    } else {
+        HZ_CORE_ERROR("Could not open shader file '{0}'", filepath);
+    }
 
-	return result;
+    return result;
 }
 
 shader_umap OpenGLShader::PreProcess(const std::string& source)
 {
-	shader_umap shaderSources;
+    shader_umap shaderSources;
 
-	const char* typeToken = "#type";
-	size_t typeTokenLength = strlen(typeToken);
-	size_t pos = source.find(typeToken, 0);
+    const char* typeToken = "#type";
+    size_t typeTokenLength = strlen(typeToken);
+    size_t pos = source.find(typeToken, 0);
 
-	while(pos != std::string::npos)
-	{
-		size_t eol = source.find_first_of("\r\n", pos);
-		HZ_CORE_ASSERT(eol != std::string::npos, "Syntax error in shader:\n" + source);
-		size_t begin = pos + typeTokenLength + 1;
-		std::string type = source.substr(begin, eol - begin);
-		HZ_CORE_ASSERT(ShaderTypeFromString(type, m_ShaderFilepath),
-					   "Invalid shader type specified in:\n" + source);
+    while (pos != std::string::npos) {
+        size_t eol = source.find_first_of("\r\n", pos);
+        HZ_CORE_ASSERT(eol != std::string::npos, "Syntax error in shader:\n" + source);
+        size_t begin = pos + typeTokenLength + 1;
+        std::string type = source.substr(begin, eol - begin);
+        HZ_CORE_ASSERT(ShaderTypeFromString(type, m_ShaderFilepath),
+            "Invalid shader type specified in:\n" + source);
 
-		size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-		pos = source.find(typeToken, nextLinePos);
-		shaderSources[ShaderTypeFromString(type, m_ShaderFilepath)] = source.substr(
-			nextLinePos,
-			pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-	}
+        size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+        pos = source.find(typeToken, nextLinePos);
+        shaderSources[ShaderTypeFromString(type, m_ShaderFilepath)] = source.substr(
+            nextLinePos,
+            pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+    }
 
-	return shaderSources;
+    return shaderSources;
 }
 
 void OpenGLShader::Compile(const shader_umap& shaderSources)
 {
-	GLuint program = glCreateProgram();
-	std::vector<GLenum> glShaderIDs(shaderSources.size());
+    GLuint program = glCreateProgram();
+    std::vector<GLenum> glShaderIDs(shaderSources.size());
 
-	for(auto& kv : shaderSources)
-	{
-		GLenum type = kv.first;
-		const std::string& source = kv.second;
+    for (auto& kv : shaderSources) {
+        GLenum type = kv.first;
+        const std::string& source = kv.second;
 
-		GLuint shader = glCreateShader(type);
+        GLuint shader = glCreateShader(type);
 
-		const GLchar* sourceCStr = source.c_str();
-		glShaderSource(shader, 1, &sourceCStr, 0);
+        const GLchar* sourceCStr = source.c_str();
+        glShaderSource(shader, 1, &sourceCStr, 0);
 
-		glCompileShader(shader);
+        glCompileShader(shader);
 
-		GLint isCompiled = 0;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-		if(isCompiled == GL_FALSE)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+        GLint isCompiled = 0;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+        if (isCompiled == GL_FALSE) {
+            GLint maxLength = 0;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+            std::vector<GLchar> infoLog(maxLength);
+            glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-			glDeleteShader(shader);
+            glDeleteShader(shader);
 
-			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "Shader compilation failed!");
-			break;
-		}
+            HZ_CORE_ERROR("{0}", infoLog.data());
+            HZ_CORE_ASSERT(false, "Shader compilation failed!");
+            break;
+        }
 
-		glAttachShader(program, shader);
-		glShaderIDs.push_back(shader);
-	}
+        glAttachShader(program, shader);
+        glShaderIDs.push_back(shader);
+    }
 
-	m_RendererID = program;
+    m_RendererID = program;
 
-	glLinkProgram(program);
+    glLinkProgram(program);
 
-	GLint isLinked = 0;
-	glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-	if(isLinked == GL_FALSE)
-	{
-		GLint maxLength = 0;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+    GLint isLinked = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+    if (isLinked == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
-		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        std::vector<GLchar> infoLog(maxLength);
+        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
-		glDeleteProgram(program);
+        glDeleteProgram(program);
 
-		for(auto id : glShaderIDs) glDeleteShader(id);
+        for (auto id : glShaderIDs)
+            glDeleteShader(id);
 
-		HZ_CORE_ERROR("{0}", infoLog.data());
-		HZ_CORE_ASSERT(false, "Shader linking failed!");
-		return;
-	}
+        HZ_CORE_ERROR("{0}", infoLog.data());
+        HZ_CORE_ASSERT(false, "Shader linking failed!");
+        return;
+    }
 
-	for(auto id : glShaderIDs) glDetachShader(program, id);
+    for (auto id : glShaderIDs)
+        glDetachShader(program, id);
 }
 
 void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
@@ -155,44 +151,44 @@ void OpenGLShader::Unbind() const { glUseProgram(0); }
 
 void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniform1i(location, value);
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1i(location, value);
 }
 
 void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniform1f(location, value);
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1f(location, value);
 }
 
 void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& values)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniform2f(location, values.x, values.y);
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform2f(location, values.x, values.y);
 }
 
 void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& values)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniform3f(location, values.x, values.y, values.z);
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform3f(location, values.x, values.y, values.z);
 }
 
 void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& values)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniform4fv(location, 1, glm::value_ptr(values));
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform4fv(location, 1, glm::value_ptr(values));
 }
 
 void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 {
-	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 } // namespace Hazel
