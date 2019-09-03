@@ -111,8 +111,7 @@ public:
 		Hazel::Renderer::Submit(
 			m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
 
-		// Triangle
-		// Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Hazel::Renderer::EndScene();
 	}

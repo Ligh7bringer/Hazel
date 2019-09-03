@@ -8,7 +8,10 @@
 
 // temporary
 typedef unsigned int GLenum;
+typedef int GLint;
+
 using shader_umap = std::unordered_map<GLenum, std::string>;
+using uniform_umap = std::unordered_map<std::string, GLint>;
 
 namespace Hazel
 {
@@ -38,9 +41,12 @@ private:
 	shader_umap PreProcess(const std::string& source);
 	void Compile(const shader_umap& shaderSources);
 
+	GLint GetUniformLocation(const std::string& name) const;
+
 private:
 	uint32_t m_RendererID;
 	std::string m_ShaderFilepath;
+	mutable uniform_umap m_UniformLocationCache;
 };
 
 } // namespace Hazel
