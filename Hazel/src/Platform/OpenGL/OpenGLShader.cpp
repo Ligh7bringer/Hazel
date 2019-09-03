@@ -41,7 +41,7 @@ OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
 std::string OpenGLShader::ReadFile(const std::string& filepath)
 {
 	std::string result;
-	std::ifstream in(filepath, std::ios::in);
+	std::ifstream in(filepath, std::ios::in | std::ios::binary);
 	if(in)
 	{
 		in.seekg(0, std::ios::end);
