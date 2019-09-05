@@ -88,7 +88,8 @@ shader_umap OpenGLShader::PreProcess(const std::string& source)
 void OpenGLShader::Compile(const shader_umap& shaderSources)
 {
 	GLuint program = glCreateProgram();
-	std::vector<GLenum> glShaderIDs(shaderSources.size());
+	std::vector<GLenum> glShaderIDs;
+	glShaderIDs.reserve(shaderSources.size());
 
 	for(auto& kv : shaderSources)
 	{
