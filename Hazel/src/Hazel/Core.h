@@ -32,6 +32,7 @@
 
 // Debug settings
 #if defined HZ_DEBUG
+	
 	#if defined HZ_PLATFORM_WINDOWS
 		#define HZ_DEBUGBREAK() __debugbreak()
 	#elif defined HZ_PLATFORM_LINUX
@@ -39,7 +40,10 @@
 		#define HZ_DEBUGBREAK() raise(SIGTRAP)
 	#endif
 
+	#define HZ_ENABLE_RENDERER_LOG
 	#define HZ_ENABLE_ASSERTS
+	#define HZ_ENABLE_CORE_LOG
+	#define HZ_ENABLE_CLIENT_LOG
 #endif // End of Debug settings
 
 // Assert statements
