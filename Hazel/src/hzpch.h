@@ -1,19 +1,20 @@
 #pragma once
 
+#include <algorithm>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <utility>
-#include <algorithm>
-#include <functional>
 
-#include <string>
+#include <array>
 #include <sstream>
-#include <vector>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include "Hazel/Log.h"
 
 #ifdef HZ_PLATFORM_WINDOWS
-	#include <Windows.h>
+#	include <Windows.h>
 #endif

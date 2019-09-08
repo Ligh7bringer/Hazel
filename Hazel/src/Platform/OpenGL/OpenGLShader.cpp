@@ -25,10 +25,19 @@ OpenGLShader::OpenGLShader(const std::string& filepath)
 	std::string source = ReadFile(filepath);
 	auto shaderSources = PreProcess(source);
 	Compile(shaderSources);
+
+	auto lastSlash = filepath.find_last_of("/\\");
+	lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+	auto lastDot = filepath.rfind('.');
+	auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+	m_Name = filepath.substr(lastSlash, count);
 }
 
-OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
-	: m_ShaderFilepath("")
+OpenGLShader::OpenGLShader(const std::string& name,
+						   const std::string& vertexSrc,
+						   const std::string& fragmentSrc)
+	: m_Name(name)
+	, m_ShaderFilepath("")
 {
 	shader_umap sources;
 	sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -88,9 +97,10 @@ shader_umap OpenGLShader::PreProcess(const std::string& source)
 void OpenGLShader::Compile(const shader_umap& shaderSources)
 {
 	GLuint program = glCreateProgram();
-	std::vector<GLenum> glShaderIDs;
-	glShaderIDs.reserve(shaderSources.size());
-
+	constexpr int shaderArraySize = 2;
+	HZ_CORE_ASSERT(shaderSources.size() <= 2, "Maximum number of shaders (for now) exceeded");
+	std::array<GLenum, shaderArraySize> glShaderIDs;
+	int shaderIDIdx = 0;
 	for(auto& kv : shaderSources)
 	{
 		GLenum type = kv.first;
@@ -121,7 +131,7 @@ void OpenGLShader::Compile(const shader_umap& shaderSources)
 		}
 
 		glAttachShader(program, shader);
-		glShaderIDs.push_back(shader);
+		glShaderIDs[shaderIDIdx++] = shader;
 	}
 
 	m_RendererID = program;

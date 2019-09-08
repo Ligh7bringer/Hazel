@@ -49,15 +49,15 @@ public:
 			Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
-		m_Shader.reset(Hazel::Shader::Create("assets/shaders/Basic.glsl"));
-		m_FlatColShader.reset(Hazel::Shader::Create("assets/shaders/FlatCol.glsl"));
-		m_TextureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
+		m_TriangleShader = Hazel::Shader::Create("assets/shaders/Basic.glsl");
+		m_FlatColShader = Hazel::Shader::Create("assets/shaders/FlatCol.glsl");
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
-		m_Texture = Hazel::Texture2D::Create("assets/textures/checker.png");
+		m_CheckerTexture = Hazel::Texture2D::Create("assets/textures/checker.png");
 		m_DiamondTexture = Hazel::Texture2D::Create("assets/textures/diamond.png");
 
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)
 			->UploadUniformInt("u_Texture", 0);
 	}
 
@@ -104,12 +104,14 @@ public:
 			}
 		}
 
-		m_Texture->Bind();
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
+		m_CheckerTexture->Bind();
 		Hazel::Renderer::Submit(
-			m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
+			textureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
 		m_DiamondTexture->Bind();
 		Hazel::Renderer::Submit(
-			m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
+			textureShader, m_SquareVA, glm::scale(glm::mat4(1.f), glm::vec3(1.5f)));
 
 		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
@@ -155,13 +157,14 @@ public:
 	};
 
 private:
-	Hazel::Ref<Hazel::Shader> m_Shader;
+	Hazel::ShaderLibrary m_ShaderLibrary;
+	Hazel::Ref<Hazel::Shader> m_TriangleShader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 
-	Hazel::Ref<Hazel::Shader> m_FlatColShader, m_TextureShader;
+	Hazel::Ref<Hazel::Shader> m_FlatColShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
-	Hazel::Ref<Hazel::Texture2D> m_Texture, m_DiamondTexture;
+	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture, m_DiamondTexture;
 
 	Hazel::OrthographicCamera m_Camera;
 	GUIProperties m_GUIProps;
