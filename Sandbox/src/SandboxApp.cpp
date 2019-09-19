@@ -11,7 +11,7 @@ class ExampleLayer : public Hazel::Layer
 public:
 	ExampleLayer()
 		: Layer("Example")
-		, m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+		, m_CameraController(1280.f / 720.f, true)
 	{
 		m_VertexArray.reset(Hazel::VertexArray::Create());
 
@@ -63,30 +63,12 @@ public:
 
 	void OnUpdate(Hazel::Timestep dt) override
 	{
-		float time = dt;
+		m_CameraController.OnUpdate(dt);
 
-		if(Hazel::Input::IsKeyPressed(HZ_KEY_A))
-			m_GUIProps.Position.x -= m_CameraSpeed * dt;
-		else if(Hazel::Input::IsKeyPressed(HZ_KEY_D))
-			m_GUIProps.Position.x += m_CameraSpeed * dt;
-
-		if(Hazel::Input::IsKeyPressed(HZ_KEY_W))
-			m_GUIProps.Position.y += m_CameraSpeed * dt;
-		else if(Hazel::Input::IsKeyPressed(HZ_KEY_S))
-			m_GUIProps.Position.y -= m_CameraSpeed * dt;
-
-		if(Hazel::Input::IsKeyPressed(HZ_KEY_Y))
-			m_GUIProps.Rotation += m_CameraRotationSpeed * dt;
-		else if(Hazel::Input::IsKeyPressed(HZ_KEY_T))
-			m_GUIProps.Rotation -= m_CameraRotationSpeed * dt;
-
-		Hazel::RenderCommand::SetClearColor(m_GUIProps.ClearColour);
+		Hazel::RenderCommand::SetClearColor(m_ClearColour);
 		Hazel::RenderCommand::Clear();
 
-		m_Camera.SetPosition(m_GUIProps.Position);
-		m_Camera.SetRotation(m_GUIProps.Rotation);
-
-		Hazel::Renderer::BeginScene(m_Camera);
+		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		static glm::mat4 scale = glm::scale(glm::mat4(1.f), glm::vec3(0.1f));
 
@@ -118,7 +100,7 @@ public:
 		Hazel::Renderer::EndScene();
 	}
 
-	void OnEvent(Hazel::Event& evt) override {}
+	void OnEvent(Hazel::Event& evt) override { m_CameraController.OnEvent(evt); }
 
 	void OnImGuiRender() override
 	{
@@ -129,32 +111,13 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Settings");
-		ImGui::Text("Camera position");
-		ImGui::SliderFloat("Position.X", &m_GUIProps.Position.x, -2.f, 2.0f);
-		ImGui::SliderFloat("Position.Y", &m_GUIProps.Position.y, -2.f, 2.0f);
-		ImGui::SliderFloat("Position.Z", &m_GUIProps.Position.z, -2.f, 2.0f);
-
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
-		ImGui::Text("Camera rotation");
-		ImGui::SliderFloat("Rotation.Z", &m_GUIProps.Rotation, 0.0f, 360.f);
-
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
 		static ImVec4 color = ImVec4(0.1f, 0.2f, 0.2f, 1.f);
 		ImGui::Text("Clear colour:");
-		ImGui::ColorEdit4(
-			"glClearColor##2f", (float*)&m_GUIProps.ClearColour, ImGuiColorEditFlags_Float);
+		ImGui::ColorEdit4("glClearColor##2f", (float*)&m_ClearColour, ImGuiColorEditFlags_Float);
 		ImGui::ColorEdit4("Square colour", glm::value_ptr(m_SquareColor));
 		ImGui::End();
 	}
-
-	struct GUIProperties
-	{
-		glm::vec3 Position{0.f, 0.f, 0.f};
-		float Rotation = 0.f;
-		glm::vec4 ClearColour{0.16f, 0.7f, 0.3f, 1.0f};
-	};
 
 private:
 	Hazel::ShaderLibrary m_ShaderLibrary;
@@ -166,12 +129,10 @@ private:
 
 	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture, m_DiamondTexture;
 
-	Hazel::OrthographicCamera m_Camera;
-	GUIProperties m_GUIProps;
-	float m_CameraSpeed = 5.f;
-	float m_CameraRotationSpeed = 30.f;
+	Hazel::OrthographicCameraController m_CameraController;
 
 	glm::vec4 m_SquareColor = {.2f, .3f, .8f, 1.f};
+	glm::vec4 m_ClearColour{0.16f, 0.7f, 0.3f, 1.0f};
 };
 
 class Sandbox : public Hazel::Application

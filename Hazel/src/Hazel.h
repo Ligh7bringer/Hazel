@@ -10,6 +10,7 @@
 #include "Hazel/Input.h"
 #include "Hazel/KeyCodes.h"
 #include "Hazel/MouseBtnCodes.h"
+#include "Hazel/OrthographicCameraController.h"
 
 #include "Hazel/Renderer/RenderCommand.h"
 #include "Hazel/Renderer/Renderer.h"
