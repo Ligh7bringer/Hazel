@@ -20,7 +20,7 @@ public:
 	}
 
 private:
-	static RendererAPI* s_RendererAPI;
+	static Hazel::Scope<RendererAPI> s_RendererAPI;
 };
 
 } // namespace Hazel

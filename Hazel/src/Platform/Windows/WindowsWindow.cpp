@@ -11,7 +11,7 @@
 namespace Hazel
 {
 
-static bool s_GLFWInitialised = false;
+static uint8_t s_GLFWWindowCount = 0;
 
 static void GLFWErrorCallback(int error, const char* description)
 {
@@ -32,12 +32,12 @@ void WindowsWindow::Init(const WindowProps& props)
 
 	HZ_CORE_INFO("Creating window {0} ({1}x{2})", props.Title, props.Width, props.Height);
 
-	if(!s_GLFWInitialised)
+	if(s_GLFWWindowCount == 0)
 	{
+		HZ_CORE_INFO("Initializing GLFW");
 		int success = glfwInit();
 		HZ_CORE_ASSERT(success, "Could not init GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
-		s_GLFWInitialised = true;
 	}
 
 	// set window hints, i.e. opengl version!
@@ -52,8 +52,9 @@ void WindowsWindow::Init(const WindowProps& props)
 
 	m_Window = glfwCreateWindow(
 		(int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+	++s_GLFWWindowCount;
 
-	m_Context = new OpenGLContext(m_Window);
+	m_Context = MakeScope<OpenGLContext>(m_Window);
 	m_Context->Init();
 
 	glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -156,8 +157,12 @@ void WindowsWindow::Init(const WindowProps& props)
 void WindowsWindow::Shutdown()
 {
 	glfwDestroyWindow(m_Window);
-	m_Window = nullptr;
-	glfwTerminate();
+
+	if(--s_GLFWWindowCount == 0)
+	{
+		HZ_CORE_INFO("Terminating GLFW");
+		glfwTerminate();
+	}
 }
 
 void WindowsWindow::OnUpdate()

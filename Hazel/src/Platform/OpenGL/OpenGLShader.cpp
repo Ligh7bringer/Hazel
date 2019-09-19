@@ -157,7 +157,11 @@ void OpenGLShader::Compile(const shader_umap& shaderSources)
 		return;
 	}
 
-	for(auto id : glShaderIDs) glDetachShader(program, id);
+	for(auto id : glShaderIDs)
+	{
+		glDetachShader(program, id);
+		glDeleteShader(id);
+	}
 }
 
 void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
