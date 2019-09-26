@@ -32,6 +32,7 @@ public:
 
 private:
 	bool OnWindowClose(WindowCloseEvent& e);
+	bool OnWindowResize(WindowResizeEvent& e);
 
 private:
 	std::unique_ptr<Window> m_Window;
@@ -40,6 +41,7 @@ private:
 	LayerStack m_LayerStack;
 	Timestep m_Timestep;
 	float m_LastFrameTime = 0.f;
+	bool m_Minimised = false;
 
 private:
 	static Application* s_Instance;
