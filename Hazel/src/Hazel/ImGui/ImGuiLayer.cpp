@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 // clang-format off
 #include "Hazel/Core/Application.h"
 #include "ImGuiLayer.h"

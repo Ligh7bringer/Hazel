@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 // clang-format off
 #include "OpenGLContext.h"
 

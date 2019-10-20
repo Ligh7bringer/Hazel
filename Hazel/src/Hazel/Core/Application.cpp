@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "Application.h"
 #include "Input.h"
 

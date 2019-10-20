@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "Shader.h"
 
 #include "Hazel/Renderer/Renderer.h"

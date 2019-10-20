@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "VertexArray.h"
 
 #include "Hazel/Renderer/Renderer.h"

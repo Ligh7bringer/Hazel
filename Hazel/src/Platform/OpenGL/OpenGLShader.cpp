@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "OpenGLShader.h"
 
 #include <glad/glad.h>
@@ -146,7 +144,7 @@ void OpenGLShader::Compile(const shader_umap& shaderSources)
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+		glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
 
 		glDeleteProgram(program);
 

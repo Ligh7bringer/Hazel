@@ -14,7 +14,6 @@
 	#else
 		#define HAZEL_API
 	#endif
-
 #elif defined HZ_PLATFORM_LINUX
 	#if defined HZ_DYNAMIC_LINK
 		#if defined HZ_BUILD_DLL
@@ -31,8 +30,7 @@
 #endif
 
 // Debug settings
-#if defined HZ_DEBUG
-	
+#if defined HZ_DEBUG	
 	#if defined HZ_PLATFORM_WINDOWS
 		#define HZ_DEBUGBREAK() __debugbreak()
 	#elif defined HZ_PLATFORM_LINUX

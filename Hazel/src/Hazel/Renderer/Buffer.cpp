@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "Buffer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"

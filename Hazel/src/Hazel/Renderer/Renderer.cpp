@@ -1,5 +1,3 @@
-#include "hzpch.h"
-
 #include "Renderer.h"
 #include "Renderer2D.h"
 

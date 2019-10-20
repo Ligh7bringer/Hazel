@@ -2,25 +2,24 @@ version: 1.0.{build}
 image: Visual Studio 2019
 
 configuration:
-- Release
+  - Release
 
-# cache:
-# - bin/lib -> appveyor.yml
+cache:
+  - build\cmake-3.16.0-rc2-win64-x64 -> appveyor.yml
 
 before_build:
   # Clone libs
   - cmd: git submodule update --init --recursive
-    
-  # Download Premake
-  - ps: Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha14/premake-5.0.0-alpha14-windows.zip' 'premake.zip'
-
-  # Extract it at the top level
-  - cmd: 7z x premake.zip
-
+  - cmd: mkdir build
+  - cmd: cd build
+  # Download latest CMake
+  - ps: Start-FileDownload 'https://github.com/Kitware/CMake/releases/download/v3.16.0-rc2/cmake-3.16.0-rc2-win64-x64.zip' 'cmake.zip'
+  # Extract it in build folder
+  - cmd: 7z x cmake.zip
   # Generate solution
-  - cmd: premake5.exe vs2019
+  - cmd: .\cmake-3.16.0-rc2-win64-x64\bin\cmake.exe ..
 
 build:
-  project: Hazel.sln
+  project: build\Hazel.sln
   parallel: true
   verbosity: minimal
