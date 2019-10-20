@@ -10,7 +10,7 @@ cache:
 before_build:
   # Clone libs
   - cmd: git submodule update --init --recursive
-  - cmd: mkdir build
+  - cmd: if not exist build mkdir build
   - cmd: cd build
   # Download latest CMake
   - ps: Start-FileDownload 'https://github.com/Kitware/CMake/releases/download/v3.16.0-rc2/cmake-3.16.0-rc2-win64-x64.zip' 'cmake.zip'
