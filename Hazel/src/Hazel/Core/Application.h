@@ -48,6 +48,6 @@ private:
 };
 
 // to be defined in the client
-Application* CreateApplication();
+Scope<Application> CreateApplication();
 
 } // namespace Hazel

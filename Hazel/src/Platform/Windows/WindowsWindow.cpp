@@ -18,7 +18,7 @@ static void GLFWErrorCallback(int error, const char* description)
 	HZ_CORE_ERROR("GLFW Error {0}: {1}", error, description);
 }
 
-Window* Window::Create(const WindowProps& props) { return new WindowsWindow(props); }
+Scope<Window> Window::Create(const WindowProps& props) { return MakeScope<WindowsWindow>(props); }
 
 WindowsWindow::WindowsWindow(const WindowProps& props) { Init(props); }
 
@@ -54,7 +54,7 @@ void WindowsWindow::Init(const WindowProps& props)
 		(int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 	++s_GLFWWindowCount;
 
-	m_Context = MakeScope<OpenGLContext>(m_Window);
+	m_Context = GraphicsContext::Create(m_Window);
 	m_Context->Init();
 
 	glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -86,20 +86,17 @@ void WindowsWindow::Init(const WindowProps& props)
 
 						   switch(action)
 						   {
-						   case GLFW_PRESS:
-						   {
+						   case GLFW_PRESS: {
 							   KeyPressedEvent event(key, 0);
 							   data.EventCallback(event);
 							   break;
 						   }
-						   case GLFW_RELEASE:
-						   {
+						   case GLFW_RELEASE: {
 							   KeyReleasedEvent event(key);
 							   data.EventCallback(event);
 							   break;
 						   }
-						   case GLFW_REPEAT:
-						   {
+						   case GLFW_REPEAT: {
 							   // repeat count is just set to 1 for now
 							   KeyPressedEvent event(key, 1);
 							   data.EventCallback(event);
@@ -122,14 +119,12 @@ void WindowsWindow::Init(const WindowProps& props)
 
 		switch(action)
 		{
-		case GLFW_PRESS:
-		{
+		case GLFW_PRESS: {
 			MouseButtonPressedEvent event(button);
 			data.EventCallback(event);
 			break;
 		}
-		case GLFW_RELEASE:
-		{
+		case GLFW_RELEASE: {
 			MouseButtonReleasedEvent event(button);
 			data.EventCallback(event);
 			break;

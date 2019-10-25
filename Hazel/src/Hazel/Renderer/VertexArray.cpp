@@ -13,7 +13,7 @@ Ref<VertexArray> VertexArray::Create()
 	case RendererAPI::API::None:
 		HZ_CORE_ASSERT(false, "RenderAPI::NONE is not implemented!");
 		return nullptr;
-	case RendererAPI::API::OpenGL: return CreateRef<OpenGLVertexArray>();
+	case RendererAPI::API::OpenGL: return MakeRef<OpenGLVertexArray>();
 	}
 
 	HZ_CORE_ASSERT(false, "Unsupported and/or unknown Render API selected!");

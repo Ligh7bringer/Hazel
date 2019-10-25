@@ -14,7 +14,7 @@ Ref<Shader> Shader::Create(const std::string& filepath)
 	case RendererAPI::API::None:
 		HZ_CORE_ASSERT(false, "RenderAPI::NONE is not implemented!");
 		return nullptr;
-	case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(filepath);
+	case RendererAPI::API::OpenGL: return MakeRef<OpenGLShader>(filepath);
 	}
 
 	HZ_CORE_ASSERT(false, "Unknown Render API!");
@@ -30,8 +30,7 @@ Ref<Shader> Shader::Create(const std::string& name,
 	case RendererAPI::API::None:
 		HZ_CORE_ASSERT(false, "RenderAPI::NONE is not implemented!");
 		return nullptr;
-	case RendererAPI::API::OpenGL:
-		return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+	case RendererAPI::API::OpenGL: return MakeRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 	}
 
 	HZ_CORE_ASSERT(false, "Unknown Render API!");

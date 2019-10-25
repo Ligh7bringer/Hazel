@@ -71,22 +71,29 @@ shader_umap OpenGLShader::PreProcess(const std::string& source)
 
 	const char* typeToken = "#type";
 	size_t typeTokenLength = strlen(typeToken);
+	// Start of shader type declaration line
 	size_t pos = source.find(typeToken, 0);
 
 	while(pos != std::string::npos)
 	{
+		// End of shader type declaration line
 		size_t eol = source.find_first_of("\r\n", pos);
-		HZ_CORE_ASSERT(eol != std::string::npos, "Syntax error in shader:\n" + source);
+		HZ_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+		// Start of shader type name (after "#type " keyword)
 		size_t begin = pos + typeTokenLength + 1;
 		std::string type = source.substr(begin, eol - begin);
 		HZ_CORE_ASSERT(ShaderTypeFromString(type, m_ShaderFilepath),
-					   "Invalid shader type specified in:\n" + source);
+					   "Invalid shader type specified");
 
+		// Start of shader code after shader type declaration line
 		size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+		HZ_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+		// Start of next shader type declaration line
 		pos = source.find(typeToken, nextLinePos);
-		shaderSources[ShaderTypeFromString(type, m_ShaderFilepath)] = source.substr(
-			nextLinePos,
-			pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+
+		shaderSources[ShaderTypeFromString(type, m_ShaderFilepath)] =
+			(pos == std::string::npos) ? source.substr(nextLinePos)
+									   : source.substr(nextLinePos, pos - nextLinePos);
 	}
 
 	return shaderSources;

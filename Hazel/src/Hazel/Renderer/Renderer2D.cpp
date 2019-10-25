@@ -22,17 +22,17 @@ void Renderer2D::Init()
 	s_Data = new Renderer2DStorage();
 	s_Data->QuadVertexArray = VertexArray::Create();
 
-	float squareVertices[5 * 4] = {
+	float squareVertices[3 * 4] = {
 		-0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f};
 
 	Ref<VertexBuffer> squareVB;
-	squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+	squareVB = VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 	squareVB->SetLayout({{ShaderDataType::Float3, "a_Position"}});
 	s_Data->QuadVertexArray->AddVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
 	Ref<IndexBuffer> squareIB;
-	squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+	squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 	s_Data->QuadVertexArray->SetIndexBuffer(squareIB);
 
 	s_Data->FlatColShader = Shader::Create("assets/shaders/FlatCol.glsl");

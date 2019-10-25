@@ -34,6 +34,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type)
 	case ShaderDataType::Int3: return 4 * 3;
 	case ShaderDataType::Int4: return 4 * 4;
 	case ShaderDataType::Bool: return 1;
+	case ShaderDataType::None: return 0;
 	}
 
 	HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
@@ -46,7 +47,7 @@ struct BufferElement
 
 	std::string Name;
 	ShaderDataType Type;
-	uint32_t Offset;
+	std::size_t Offset;
 	uint32_t Size;
 	bool Normalised;
 
@@ -73,6 +74,7 @@ struct BufferElement
 		case ShaderDataType::Int3: return 3;
 		case ShaderDataType::Int4: return 4;
 		case ShaderDataType::Bool: return 1;
+		case ShaderDataType::None: return 0;
 		}
 
 		HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
@@ -103,10 +105,12 @@ public:
 private:
 	void CalculateOffsetAndStride()
 	{
+		std::size_t offset = 0;
 		m_Stride = 0;
-		for(BufferElement& element : m_Elements)
+		for(auto& element : m_Elements)
 		{
-			element.Offset = m_Stride;
+			element.Offset = offset;
+			offset += element.Size;
 			m_Stride += element.Size;
 		}
 	}
@@ -127,7 +131,7 @@ public:
 	virtual const BufferLayout& GetLayout() const = 0;
 	virtual void SetLayout(const BufferLayout& layout) = 0;
 
-	static VertexBuffer* Create(float* vertices, uint32_t size);
+	static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 };
 
 class IndexBuffer
@@ -140,7 +144,7 @@ public:
 
 	virtual uint32_t GetCount() const = 0;
 
-	static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+	static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };
 
 } // namespace Hazel
