@@ -383,7 +383,8 @@ MigrationBackup/
 
 ## Custom files ##
 bin/
-bin-int
+bin-int/
+out/
 # files spawned by visual studio
 *.vcxproj
 *.filters
@@ -395,3 +396,5 @@ Makefile
 .vscode
 
 imgui.ini
+
+CMakeSettings.json

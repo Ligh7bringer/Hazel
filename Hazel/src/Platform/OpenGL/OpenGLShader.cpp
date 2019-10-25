@@ -166,6 +166,21 @@ void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
 
 void OpenGLShader::Unbind() const { glUseProgram(0); }
 
+void OpenGLShader::SetFloat3(const std::string& name, glm::vec3& value)
+{
+	UploadUniformFloat3(name, value);
+}
+
+void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+{
+	UploadUniformFloat4(name, value);
+}
+
+void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+{
+	UploadUniformMat4(name, value);
+}
+
 GLint OpenGLShader::GetUniformLocation(const std::string& name) const
 {
 	auto keyValue = m_UniformLocationCache.find(name);
