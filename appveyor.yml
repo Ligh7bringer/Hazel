@@ -4,8 +4,8 @@ image: Visual Studio 2019
 configuration:
   - Release
 
-cache:
-  - build\cmake-3.16.0-rc2-win64-x64 -> appveyor.yml
+# cache:
+#   - build\cmake-3.16.0-rc2-win64-x64 -> appveyor.yml
 
 before_build:
   # Clone libs
