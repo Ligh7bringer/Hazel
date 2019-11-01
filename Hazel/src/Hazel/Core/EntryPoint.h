@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 // as no platform specific code is used
 #ifdef HZ_PLATFORM_LINUX
 
-extern Hazel::Application* Hazel::CreateApplication();
+extern Hazel::Scope<Hazel::Application> Hazel::CreateApplication();
 
 int main(int argc, char** argv)
 {

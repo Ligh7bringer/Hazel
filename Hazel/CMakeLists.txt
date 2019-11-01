@@ -1,3 +1,6 @@
+option(GLFW_BUILD_DOCS OFF)
+option(GLFW_BUILD_EXAMPLES OFF)
+option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
 
 file(GLOB_RECURSE HAZEL_SRCS src/*.h src/*.cpp)

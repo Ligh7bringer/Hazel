@@ -59,9 +59,8 @@ public:
 		m_CheckerTexture = Hazel::Texture2D::Create("assets/textures/checker.png");
 		m_DiamondTexture = Hazel::Texture2D::Create("assets/textures/diamond.png");
 
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(textureShader)
-			->UploadUniformInt("u_Texture", 0);
+		textureShader->Bind();
+		textureShader->SetInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep dt) override

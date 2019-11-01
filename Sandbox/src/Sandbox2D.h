@@ -18,6 +18,8 @@ public:
 private:
 	Hazel::Ref<Hazel::Shader> m_FlatColShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture;
+
 	glm::vec4 m_SquareColor = {.2f, .3f, .8f, 1.f};
 	Hazel::OrthographicCameraController m_CameraController;
 };
