@@ -24,16 +24,8 @@ target_include_directories(
 
 target_compile_features(Hazel PUBLIC cxx_std_17)
 
-if(WIN32)
-  set(CURR_PLATFORM HZ_PLATFORM_WINDOWS)
-elseif(UNIX)
-  set(CURR_PLATFORM HZ_PLATFORM_LINUX)
-else()
-  set(CURR_PLATFORM UNSUPPORTED)
-endif()
-
 target_compile_definitions(
-  Hazel PUBLIC ${CURR_PLATFORM} _CRT_SECURE_NO_WARNINGS GLFW_INCLUDE_NONE
+  Hazel PUBLIC _CRT_SECURE_NO_WARNINGS GLFW_INCLUDE_NONE
   $<$<CONFIG:Debug>:HZ_DEBUG>)
 target_precompile_headers(Hazel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/hzpch.h)
 
