@@ -16,10 +16,19 @@ public:
 	virtual void OnEvent(Hazel::Event& event) override;
 
 private:
+	Hazel::OrthographicCameraController m_CameraController;
+
 	Hazel::Ref<Hazel::Shader> m_FlatColShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture;
 
+	struct ProfileResult
+	{
+		const char* Name;
+		float Time;
+	};
+
+	std::vector<ProfileResult> m_ProfileResults;
+
 	glm::vec4 m_SquareColor = {.2f, .3f, .8f, 1.f};
-	Hazel::OrthographicCameraController m_CameraController;
 };
