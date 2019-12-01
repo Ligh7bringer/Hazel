@@ -6,7 +6,7 @@ class Sandbox2D : public Hazel::Layer
 {
 public:
 	Sandbox2D();
-	virtual ~Sandbox2D() = default;
+	virtual ~Sandbox2D();
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;

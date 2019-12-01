@@ -28,6 +28,8 @@ void OpenGLMessageCallback(unsigned source,
 
 void OpenGLRendererAPI::Init()
 {
+	HZ_PROFILE_FUNCTION();
+
 #ifdef HZ_ENABLE_RENDERER_LOG
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -59,7 +61,7 @@ void Hazel::OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
 {
 	glDrawElements(
 		GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-    glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 } // namespace Hazel

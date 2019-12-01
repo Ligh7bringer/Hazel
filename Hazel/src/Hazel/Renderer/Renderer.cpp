@@ -10,6 +10,8 @@ Scope<Renderer::SceneData> Renderer::s_SceneData = MakeScope<Renderer::SceneData
 
 void Renderer::Init()
 {
+	HZ_PROFILE_FUNCTION();
+
 	HZ_CORE_INFO("Initialising Renderer");
 	RenderCommand::Init();
 	Renderer2D::Init();
