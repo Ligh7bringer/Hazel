@@ -394,6 +394,10 @@ out/
 Makefile
 .vscode
 
+# imgui settings
 imgui.ini
 
 CMakeSettings.json
+build 
+
+HazelProfile*.json

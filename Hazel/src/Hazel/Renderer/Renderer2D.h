@@ -50,6 +50,13 @@ public:
 								const Ref<Texture2D>& texture,
 								float tilingFactor = 1.f,
 								glm::vec4 tintColour = glm::vec4(1.f));
+
+private:
+	static void InitVertexBuffer(const glm::vec3& position,
+								 const glm::vec2& size,
+								 const glm::vec4& colour,
+								 float textureIndex,
+								 float tilingFactor);
 };
 
 } // namespace Hazel
