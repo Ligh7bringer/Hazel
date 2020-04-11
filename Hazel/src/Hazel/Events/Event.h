@@ -53,7 +53,7 @@ public:
 	virtual int GetCategoryFlags() const = 0;
 	virtual std::string ToString() const { return GetName(); }
 
-	inline bool isInCategory(EventCategory category) { return GetCategoryFlags() & category; }
+	bool isInCategory(EventCategory category) { return GetCategoryFlags() & category; }
 
 	bool Handled = false;
 };
