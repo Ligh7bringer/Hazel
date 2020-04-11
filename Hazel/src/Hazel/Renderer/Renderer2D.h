@@ -52,11 +52,19 @@ public:
 								glm::vec4 tintColour = glm::vec4(1.f));
 
 private:
-	static void InitVertexBuffer(const glm::vec3& position,
+	static glm::mat4
+	ComputeTransformationMatrix(const glm::vec3& position, float rotation, const glm::vec2& size);
+
+	static float GetTextureIndex(const Ref<Texture2D>& texture);
+
+	static void InitVertexBuffer(const glm::mat4& transform,
+								 const glm::vec3& position,
 								 const glm::vec2& size,
 								 const glm::vec4& colour,
 								 float textureIndex,
 								 float tilingFactor);
+
+	static float noRotation;
 };
 
 } // namespace Hazel
