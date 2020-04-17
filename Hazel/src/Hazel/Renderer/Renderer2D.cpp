@@ -23,9 +23,9 @@ struct QuadVertex
 struct Renderer2DData
 {
 	// Max allowed per batch
-	const uint32_t MaxQuads = 10000;
-	const uint32_t MaxVertices = MaxQuads * 4;
-	const uint32_t MaxIndices = MaxQuads * 6;
+	static const uint32_t MaxQuads = 20000;
+	static const uint32_t MaxVertices = MaxQuads * 4;
+	static const uint32_t MaxIndices = MaxQuads * 6;
 	// TODO: Query driver for what the GPU actually supports
 	static const uint32_t MaxTextureSlots = 32;
 
@@ -42,6 +42,8 @@ struct Renderer2DData
 	uint32_t TextureSlotIndex = 1; // 0 = Default texture
 
 	glm::vec4 QuadVertexPositions[4];
+
+	Renderer2D::Statistics Stats;
 };
 
 static Renderer2DData* s_Data;
@@ -110,6 +112,15 @@ void Renderer2D::Shutdown()
 	delete s_Data;
 }
 
+void Renderer2D::FlushAndReset()
+{
+	EndScene();
+
+	s_Data->TextureSlotIndex = 1;
+	s_Data->QuadIndexCount = 0;
+	s_Data->QuadVertexBufferPtr = s_Data->QuadVertexBufferBase;
+}
+
 void Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
 	HZ_PROFILE_FUNCTION();
@@ -141,6 +152,7 @@ void Renderer2D::Flush()
 	}
 
 	RenderCommand::DrawIndexed(s_Data->QuadVertexArray, s_Data->QuadIndexCount);
+	s_Data->Stats.DrawCalls++;
 }
 
 void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)
@@ -235,6 +247,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position,
 	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor);
 }
 
+void Renderer2D::ResetStats() { memset(&s_Data->Stats, 0, sizeof(Statistics)); }
+
+Renderer2D::Statistics Renderer2D::GetStats() { return s_Data->Stats; }
+
 glm::mat4 Renderer2D::ComputeTransformationMatrix(const glm::vec3& position,
 												  float rotation,
 												  const glm::vec2& size)
@@ -273,6 +289,11 @@ void Renderer2D::InitVertexBuffer(const glm::mat4& transform,
 								  float textureIndex,
 								  float tilingFactor)
 {
+	if(s_Data->QuadIndexCount >= Renderer2DData::MaxIndices)
+	{
+		FlushAndReset();
+	}
+
 	// Bottom left
 	s_Data->QuadVertexBufferPtr->Position = transform * s_Data->QuadVertexPositions[0];
 	;
@@ -307,6 +328,7 @@ void Renderer2D::InitVertexBuffer(const glm::mat4& transform,
 	s_Data->QuadVertexBufferPtr++;
 
 	s_Data->QuadIndexCount += 6;
+	s_Data->Stats.QuadCount++;
 }
 
 } // namespace Hazel

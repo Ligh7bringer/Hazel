@@ -51,7 +51,20 @@ public:
 								float tilingFactor = 1.f,
 								glm::vec4 tintColour = glm::vec4(1.f));
 
+	struct Statistics
+	{
+		uint32_t DrawCalls = 0;
+		uint32_t QuadCount = 0;
+
+		uint32_t GetTotalVertexCount() { return QuadCount * 4; }
+		uint32_t GetTotalIndexCount() { return QuadCount * 6; }
+	};
+	static Statistics GetStats();
+	static void ResetStats();
+
 private:
+	static void FlushAndReset();
+
 	static glm::mat4
 	ComputeTransformationMatrix(const glm::vec3& position, float rotation, const glm::vec2& size);
 

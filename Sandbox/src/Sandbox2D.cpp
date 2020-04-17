@@ -32,6 +32,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 	}
 
 	// Render
+	Hazel::Renderer2D::ResetStats();
 	{
 		static float rotation = 0.f;
 		rotation += dt * 50.f;
@@ -42,9 +43,20 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 			{1.f, 0.f}, {0.8f, 0.8f}, -45.f, {0.8f, 0.3f, 0.2f, 1.f});
 		Hazel::Renderer2D::DrawQuad({-1.f, 0.f}, {0.8f, 0.8f}, {0.2f, 0.3f, 0.8f, 1.f});
 		Hazel::Renderer2D::DrawQuad({0.5f, -0.5f}, {0.5f, 0.75f}, {0.8f, 0.2f, 0.3f, 1.f});
-		Hazel::Renderer2D::DrawQuad({0.f, 0.f, -0.1f}, {10.f, 10.f}, m_CheckerTexture, 10.f);
+		Hazel::Renderer2D::DrawQuad({0.f, 0.f, -0.1f}, {20.f, 20.f}, m_CheckerTexture, 10.f);
 		Hazel::Renderer2D::DrawRotatedQuad(
-			{-2.f, 0.f, 0.f}, {1.f, 1.f}, rotation, m_CheckerTexture, 20.f);
+			{-2.f, 0.f, 0.f}, {1.f, 1.f}, rotation, m_CheckerTexture, 1.f);
+		// Hazel::Renderer2D::EndScene();
+
+		// Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+		for(float y = -5.f; y < 5.f; y += .5f)
+		{
+			for(float x = -5.f; x < 5.f; x += .5f)
+			{
+				glm::vec4 colour = {(x + 5.f) / 10.f, 0.4f, (y + 5.f) / 10.f, .5f};
+				Hazel::Renderer2D::DrawQuad({x, y}, {0.45f, 0.45f}, colour);
+			}
+		}
 		Hazel::Renderer2D::EndScene();
 	}
 }
@@ -58,7 +70,15 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Settings");
-	ImGui::ColorEdit4("Square colour", glm::value_ptr(m_SquareColor));
+	
+	ImGui::End();
+
+	auto stats = Hazel::Renderer2D::GetStats();
+	ImGui::Begin("Renderer2D Stats");
+	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+	ImGui::Text("Quads: %d", stats.QuadCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 	ImGui::End();
 }
 
