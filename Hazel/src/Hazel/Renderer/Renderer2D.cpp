@@ -2,7 +2,6 @@
 
 #include "RenderCommand.h"
 #include "Shader.h"
-#include "VertexArray.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -11,40 +10,10 @@ namespace Hazel
 
 float Renderer2D::noRotation = 0.f;
 
-struct QuadVertex
-{
-	glm::vec3 Position;
-	glm::vec4 Colour;
-	glm::vec2 TexCoord;
-	float TexIndex;
-	float TilingFactor;
-};
-
-struct Renderer2DData
-{
-	// Max allowed per batch
-	static const uint32_t MaxQuads = 20000;
-	static const uint32_t MaxVertices = MaxQuads * 4;
-	static const uint32_t MaxIndices = MaxQuads * 6;
-	// TODO: Query driver for what the GPU actually supports
-	static const uint32_t MaxTextureSlots = 32;
-
-	Ref<VertexArray> QuadVertexArray;
-	Ref<VertexBuffer> QuadVertexBuffer;
-	Ref<Shader> TextureShader;
-	Ref<Texture2D> WhiteTexture;
-
-	uint32_t QuadIndexCount = 0;
-	QuadVertex* QuadVertexBufferBase = nullptr;
-	QuadVertex* QuadVertexBufferPtr = nullptr;
-
-	std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
-	uint32_t TextureSlotIndex = 1; // 0 = Default texture
-
-	glm::vec4 QuadVertexPositions[4];
-
-	Renderer2D::Statistics Stats;
-};
+uint32_t Renderer2DData::MaxQuads = 20000;
+uint32_t Renderer2DData::MaxVertices = MaxQuads * 4;
+uint32_t Renderer2DData::MaxIndices = MaxQuads * 6;
+// TODO: Query driver for what the GPU actually supports
 
 static Renderer2DData* s_Data;
 
@@ -329,6 +298,14 @@ void Renderer2D::InitVertexBuffer(const glm::mat4& transform,
 
 	s_Data->QuadIndexCount += 6;
 	s_Data->Stats.QuadCount++;
+}
+
+void Renderer2D::SetMaxQuadsPerDrawCall(uint32_t value)
+{
+	auto newValue = value ? value : 1;
+	Renderer2DData::MaxQuads = newValue;
+	Renderer2DData::MaxVertices = newValue * 4;
+	Renderer2DData::MaxIndices = newValue * 6;
 }
 
 } // namespace Hazel

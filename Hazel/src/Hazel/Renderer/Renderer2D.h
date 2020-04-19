@@ -1,8 +1,9 @@
 #pragma once
 
 #include "OrthographicCamera.h"
-
+#include "Shader.h"
 #include "Texture.h"
+#include "VertexArray.h"
 
 namespace Hazel
 {
@@ -62,6 +63,8 @@ public:
 	static Statistics GetStats();
 	static void ResetStats();
 
+	static void SetMaxQuadsPerDrawCall(uint32_t value);
+
 private:
 	static void FlushAndReset();
 
@@ -78,6 +81,41 @@ private:
 								 float tilingFactor);
 
 	static float noRotation;
+};
+
+struct QuadVertex
+{
+	glm::vec3 Position;
+	glm::vec4 Colour;
+	glm::vec2 TexCoord;
+	float TexIndex;
+	float TilingFactor;
+};
+
+struct Renderer2DData
+{
+	// Max allowed per batch
+	static uint32_t MaxQuads;
+	static uint32_t MaxVertices;
+	static uint32_t MaxIndices;
+	// TODO: Query driver for what the GPU actually supports
+	static const uint32_t MaxTextureSlots = 32;
+
+	Ref<VertexArray> QuadVertexArray;
+	Ref<VertexBuffer> QuadVertexBuffer;
+	Ref<Shader> TextureShader;
+	Ref<Texture2D> WhiteTexture;
+
+	uint32_t QuadIndexCount = 0;
+	QuadVertex* QuadVertexBufferBase = nullptr;
+	QuadVertex* QuadVertexBufferPtr = nullptr;
+
+	std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+	uint32_t TextureSlotIndex = 1; // 0 = Default texture
+
+	glm::vec4 QuadVertexPositions[4];
+
+	Renderer2D::Statistics Stats;
 };
 
 } // namespace Hazel
