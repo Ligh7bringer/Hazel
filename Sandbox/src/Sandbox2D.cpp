@@ -81,7 +81,7 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Settings");
-	static int maxQuads = 100;
+	static int maxQuads = 20000;
 	ImGui::InputInt("Max quads per draw call", &maxQuads);
 	ImGui::InputInt("Draw quads", &m_NumQuads);
 	Hazel::Renderer2D::SetMaxQuadsPerDrawCall(maxQuads);
