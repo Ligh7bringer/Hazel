@@ -1,4 +1,4 @@
-#include "ParticleSystem.h"
+#include "ParticleSystem.hpp"
 
 #include <glm/gtc/constants.hpp>
 #define GLM_ENABLE_EXPERIMENTAL

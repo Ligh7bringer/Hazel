@@ -1,5 +1,5 @@
 // clang-format off
-#include "OpenGLContext.h"
+#include "OpenGLContext.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

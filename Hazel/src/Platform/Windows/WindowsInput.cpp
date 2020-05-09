@@ -1,6 +1,6 @@
-#include "WindowsInput.h"
+#include "WindowsInput.hpp"
 
-#include "Hazel/Core/Application.h"
+#include "Hazel/Core/Application.hpp"
 #include <GLFW/glfw3.h>
 
 namespace Hazel

@@ -1,7 +1,7 @@
-#include "Hazel/Core/Application.h"
-#include "Hazel/Core/Input.h"
+#include "Hazel/Core/Application.hpp"
+#include "Hazel/Core/Input.hpp"
 
-#include "Hazel/Renderer/Renderer.h"
+#include "Hazel/Renderer/Renderer.hpp"
 
 #include <GLFW/glfw3.h>
 

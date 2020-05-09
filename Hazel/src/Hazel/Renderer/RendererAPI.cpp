@@ -1,6 +1,6 @@
-#include "RendererAPI.h"
+#include "RendererAPI.hpp"
 
-#include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Platform/OpenGL/OpenGLRendererAPI.hpp"
 
 namespace Hazel
 {

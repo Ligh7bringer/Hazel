@@ -1,7 +1,7 @@
-#include "Renderer2D.h"
+#include "Renderer2D.hpp"
 
-#include "RenderCommand.h"
-#include "Shader.h"
+#include "RenderCommand.hpp"
+#include "Shader.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

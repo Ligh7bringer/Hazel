@@ -1,7 +1,7 @@
-#include "Shader.h"
+#include "Shader.hpp"
 
-#include "Hazel/Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Hazel/Renderer/Renderer.hpp"
+#include "Platform/OpenGL/OpenGLShader.hpp"
 
 namespace Hazel
 {

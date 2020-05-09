@@ -1,13 +1,11 @@
-#include <Hazel.h>
-#include <Hazel/Core/EntryPoint.h>
-
-#include "imgui.h"
+#include "Platform/OpenGL/OpenGLShader.hpp"
+#include "Sandbox2D.hpp"
+#include <Hazel.hpp>
+#include <Hazel/Core/EntryPoint.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Sandbox2D.h"
+#include <imgui.h>
 
 class ExampleLayer : public Hazel::Layer
 {

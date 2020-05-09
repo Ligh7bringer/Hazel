@@ -1,6 +1,6 @@
 // clang-format off
-#include "Hazel/Core/Application.h"
-#include "ImGuiLayer.h"
+#include "Hazel/Core/Application.hpp"
+#include "ImGuiLayer.hpp"
 
 #include "imgui.h"
 #include "examples/imgui_impl_glfw.h"
