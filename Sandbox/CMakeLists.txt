@@ -1,8 +1,8 @@
 add_executable(
   Sandbox
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Sandbox2D.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Sandbox2D.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/SandboxApp.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/SandboxApp.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleSystem.cpp)
 
 target_include_directories(
   Sandbox
