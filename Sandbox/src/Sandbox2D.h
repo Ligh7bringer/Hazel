@@ -19,6 +19,8 @@ public:
 private:
 	Hazel::OrthographicCameraController m_CameraController;
 	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture;
+	Hazel::Ref<Hazel::Texture2D> m_SpriteSheet;
+	Hazel::Ref<Hazel::SubTexture2D> m_StairsTexture, m_BarrelTexture, m_TreeTexture;
 
 	int m_NumQuads;
 

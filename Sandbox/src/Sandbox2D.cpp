@@ -8,7 +8,7 @@ Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D")
 	, m_CameraController(1280.f / 720.f)
 	, m_NumQuads(400)
-{ }
+{}
 
 Sandbox2D::~Sandbox2D() { HZ_PROFILE_FUNCTION(); }
 
@@ -17,6 +17,11 @@ void Sandbox2D::OnAttach()
 	HZ_PROFILE_FUNCTION();
 
 	m_CheckerTexture = Hazel::Texture2D::Create("assets/textures/checker.png");
+	m_SpriteSheet = Hazel::Texture2D::Create("assets/demo/textures/RPGpack_sheet_2X.png");
+	m_StairsTexture = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {7, 6}, {128, 128});
+	m_BarrelTexture = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {8, 2}, {128, 128});
+	m_TreeTexture =
+		Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {2, 1}, {128, 128}, {1, 2});
 
 	m_ParticleSystem = ParticleSystem();
 	m_Particle.ColorBegin = {254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f};
@@ -46,6 +51,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 
 	// Render
 	Hazel::Renderer2D::ResetStats();
+
+#if 0
 	{
 		static float rotation = 0.f;
 		rotation += dt * 50.f;
@@ -81,6 +88,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 		}
 		Hazel::Renderer2D::EndScene();
 	}
+#endif
 
 	if(Hazel::Input::IsMouseBtnPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
@@ -99,6 +107,12 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 
 	m_ParticleSystem.OnUpdate(dt);
 	m_ParticleSystem.OnRender(m_CameraController.GetCamera());
+
+	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Hazel::Renderer2D::DrawQuad({0.f, 0.f, 0.5f}, {1.f, 1.f}, m_StairsTexture);
+	Hazel::Renderer2D::DrawQuad({1.f, 0.f, 0.5f}, {1.f, 1.f}, m_BarrelTexture);
+	Hazel::Renderer2D::DrawQuad({-1.f, 0.f, 0.5f}, {1.f, 2.f}, m_TreeTexture);
+	Hazel::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnImGuiRender()
