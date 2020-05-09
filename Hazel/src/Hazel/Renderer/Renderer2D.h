@@ -2,6 +2,7 @@
 
 #include "OrthographicCamera.h"
 #include "Shader.h"
+#include "SubTexture2D.h"
 #include "Texture.h"
 #include "VertexArray.h"
 
@@ -20,6 +21,7 @@ public:
 
 	static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour);
 	static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour);
+	// Textures
 	static void DrawQuad(const glm::vec2& position,
 						 const glm::vec2& size,
 						 const Ref<Texture2D>& texture,
@@ -28,6 +30,17 @@ public:
 	static void DrawQuad(const glm::vec3& position,
 						 const glm::vec2& size,
 						 const Ref<Texture2D>& texture,
+						 float tilingFactor = 1.f,
+						 glm::vec4 tintColour = glm::vec4(1.f));
+	// Subtextures
+	static void DrawQuad(const glm::vec2& position,
+						 const glm::vec2& size,
+						 const Ref<SubTexture2D>& subtexture,
+						 float tilingFactor = 1.f,
+						 glm::vec4 tintColour = glm::vec4(1.f));
+	static void DrawQuad(const glm::vec3& position,
+						 const glm::vec2& size,
+						 const Ref<SubTexture2D>& subtexture,
 						 float tilingFactor = 1.f,
 						 glm::vec4 tintColour = glm::vec4(1.f));
 
@@ -39,6 +52,7 @@ public:
 								const glm::vec2& size,
 								float rotation,
 								const glm::vec4& colour);
+	// Textures
 	static void DrawRotatedQuad(const glm::vec2& position,
 								const glm::vec2& size,
 								float rotation,
@@ -49,6 +63,19 @@ public:
 								const glm::vec2& size,
 								float rotation,
 								const Ref<Texture2D>& texture,
+								float tilingFactor = 1.f,
+								glm::vec4 tintColour = glm::vec4(1.f));
+	// Subtextures
+	static void DrawRotatedQuad(const glm::vec2& position,
+								const glm::vec2& size,
+								float rotation,
+								const Ref<SubTexture2D>& subtexture,
+								float tilingFactor = 1.f,
+								glm::vec4 tintColour = glm::vec4(1.f));
+	static void DrawRotatedQuad(const glm::vec3& position,
+								const glm::vec2& size,
+								float rotation,
+								const Ref<SubTexture2D>& subtexture,
 								float tilingFactor = 1.f,
 								glm::vec4 tintColour = glm::vec4(1.f));
 
@@ -78,7 +105,8 @@ private:
 								 const glm::vec2& size,
 								 const glm::vec4& colour,
 								 float textureIndex,
-								 float tilingFactor);
+								 float tilingFactor,
+								 const glm::vec2 textureCoords[4] = nullptr);
 
 	static float noRotation;
 };
