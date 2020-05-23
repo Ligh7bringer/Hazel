@@ -24,10 +24,10 @@ void OpenGLContext::Init()
 
 	HZ_CORE_INFO("----------------------------------------------------------");
 	HZ_CORE_INFO("OpenGL info:");
-	HZ_CORE_INFO("	GL Vendor: {0}", glGetString(GL_VENDOR));
-	HZ_CORE_INFO("	GL Renderer: {0}", glGetString(GL_RENDERER));
-	HZ_CORE_INFO("	GL Version: {0}", glGetString(GL_VERSION));
-	HZ_CORE_INFO("	GLSL Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	HZ_CORE_INFO("\tGL Vendor: {0}", glGetString(GL_VENDOR));
+	HZ_CORE_INFO("\tGL Renderer: {0}", glGetString(GL_RENDERER));
+	HZ_CORE_INFO("\tGL Version: {0}", glGetString(GL_VERSION));
+	HZ_CORE_INFO("\tGLSL Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	HZ_CORE_INFO("----------------------------------------------------------");
 
 #ifdef HZ_ENABLE_ASSERTS
