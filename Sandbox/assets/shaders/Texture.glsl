@@ -26,6 +26,8 @@ void main()
 #type fragment
 #version 330 core
 
+#define MAX_TEXTURES 32
+
 layout(location = 0) out vec4 color;
 
 in vec4 v_Colour;
@@ -33,10 +35,47 @@ in vec2 v_TexCoord;
 in float v_TexIndex;
 in float v_TilingFactor;
 
-uniform sampler2D u_Textures[32];
+uniform sampler2D u_Textures[MAX_TEXTURES];
+
+#define TEXTURE(IDX)                                                                               \
+	if(v_TexIndex == IDX)                                                                          \
+	{                                                                                              \
+		color = texture(u_Textures[int(IDX)], v_TexCoord * v_TilingFactor) * v_Colour;             \
+	}
 
 void main()
 {
 	// TODO: Add tiling factor
-	color = texture(u_Textures[int(v_TexIndex)], v_TexCoord * v_TilingFactor) * v_Colour;
+	TEXTURE(0)
+	TEXTURE(1)
+	TEXTURE(2)
+	TEXTURE(3)
+	TEXTURE(4)
+	TEXTURE(5)
+	TEXTURE(6)
+	TEXTURE(7)
+	TEXTURE(8)
+	TEXTURE(9)
+	TEXTURE(10)
+	TEXTURE(11)
+	TEXTURE(12)
+	TEXTURE(13)
+	TEXTURE(14)
+	TEXTURE(15)
+	TEXTURE(16)
+	TEXTURE(17)
+	TEXTURE(18)
+	TEXTURE(19)
+	TEXTURE(20)
+	TEXTURE(21)
+	TEXTURE(22)
+	TEXTURE(23)
+	TEXTURE(24)
+	TEXTURE(25)
+	TEXTURE(26)
+	TEXTURE(27)
+	TEXTURE(28)
+	TEXTURE(29)
+	TEXTURE(30)
+	TEXTURE(31)
 }
