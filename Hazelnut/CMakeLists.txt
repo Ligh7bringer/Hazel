@@ -1,8 +1,8 @@
 include(${PROJECT_SOURCE_DIR}/CMake/Utils.cmake)
 
-set(EDITOR_EXE_NAME "HazelEditor")
+set(EDITOR_EXE_NAME "Hazelnut")
 set(EDITOR_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/EditorLayer.cpp
-                ${CMAKE_CURRENT_SOURCE_DIR}/src/HazelEditorApp.cpp)
+                ${CMAKE_CURRENT_SOURCE_DIR}/src/HazelnutApp.cpp)
 
 hz_register_exe("${EDITOR_EXE_NAME}" "${EDITOR_SRCS}")
 
