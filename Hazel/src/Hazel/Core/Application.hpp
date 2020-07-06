@@ -27,6 +27,8 @@ public:
 	void PushLayer(Layer* layer);
 	void PushOverlay(Layer* overlay);
 
+    void Close();
+
 	static Application& Get() { return *s_Instance; }
 	Window& GetWindow() { return *m_Window; }
 

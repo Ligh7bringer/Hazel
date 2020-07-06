@@ -24,5 +24,6 @@
 #include "Hazel/Renderer/SubTexture2D.hpp"
 #include "Hazel/Renderer/Texture.hpp"
 #include "Hazel/Renderer/VertexArray.hpp"
+#include "Hazel/Renderer/Framebuffer.hpp"
 
 #include "Hazel/Renderer/OrthographicCamera.hpp"

@@ -21,6 +21,7 @@ private:
 	Hazel::Ref<Hazel::Texture2D> m_CheckerTexture;
 	Hazel::Ref<Hazel::Texture2D> m_SpriteSheet;
 	Hazel::Ref<Hazel::SubTexture2D> m_StairsTexture, m_BarrelTexture, m_TreeTexture;
+	Hazel::Ref<Hazel::Framebuffer> m_Framebuffer;
 
 	int m_NumQuads;
 

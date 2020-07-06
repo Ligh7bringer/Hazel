@@ -8,13 +8,19 @@ Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D")
 	, m_CameraController(1280.f / 720.f)
 	, m_NumQuads(400)
-{}
+{ }
 
 Sandbox2D::~Sandbox2D() { HZ_PROFILE_FUNCTION(); }
 
 void Sandbox2D::OnAttach()
 {
 	HZ_PROFILE_FUNCTION();
+
+	Hazel::FramebufferSpecification fbSpec;
+	// FIXME: Shouldn't be hardcoded
+	fbSpec.Width = 1280;
+	fbSpec.Height = 720;
+	m_Framebuffer = Hazel::Framebuffer::Create(fbSpec);
 
 	m_CheckerTexture = Hazel::Texture2D::Create("assets/textures/checker.png");
 	m_SpriteSheet = Hazel::Texture2D::Create("assets/demo/textures/RPGpack_sheet_2X.png");
@@ -45,6 +51,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 	// Prepare for rendering
 	{
 		HZ_PROFILE_SCOPE("Renderer Prep");
+		m_Framebuffer->Bind();
 		Hazel::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
 		Hazel::RenderCommand::Clear();
 	}
@@ -113,11 +120,57 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 	Hazel::Renderer2D::DrawQuad({1.f, 0.f, 0.5f}, {1.f, 1.f}, m_BarrelTexture);
 	Hazel::Renderer2D::DrawQuad({-1.f, 0.f, 0.5f}, {1.f, 2.f}, m_TreeTexture);
 	Hazel::Renderer2D::EndScene();
+	m_Framebuffer->Unbind();
 }
 
 void Sandbox2D::OnImGuiRender()
 {
 	HZ_PROFILE_FUNCTION();
+
+	static bool dockSpaceOpen = true;
+	static bool opt_fullscreen_persistant = true;
+	bool opt_fullscreen = opt_fullscreen_persistant;
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	if(opt_fullscreen)
+	{
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->GetWorkPos());
+		ImGui::SetNextWindowSize(viewport->GetWorkSize());
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+						ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	}
+
+	if(dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+		window_flags |= ImGuiWindowFlags_NoBackground;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("DockSpace Demo", &dockSpaceOpen, window_flags);
+	ImGui::PopStyleVar();
+
+	if(opt_fullscreen) ImGui::PopStyleVar(2);
+
+	ImGuiIO& io = ImGui::GetIO();
+	if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	}
+
+	if(ImGui::BeginMenuBar())
+	{
+		if(ImGui::BeginMenu("File"))
+		{
+			if(ImGui::MenuItem("Exit", "")) Hazel::Application::Get().Close();
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
 
 	ImGui::Begin("Performance");
 	ImGui::Text(
@@ -137,6 +190,11 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("Quads: %d", stats.QuadCount);
 	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+	uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+	ImGui::Image((void*)textureID, ImVec2{1280.f, 720.f});
+	ImGui::End();
+
 	ImGui::End();
 }
 
