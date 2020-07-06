@@ -17,7 +17,7 @@ namespace Hazel
 class Application
 {
 public:
-	Application();
+	Application(const std::string& name = "Hazel App");
 	virtual ~Application() = default;
 
 	void Run();
@@ -27,7 +27,7 @@ public:
 	void PushLayer(Layer* layer);
 	void PushOverlay(Layer* overlay);
 
-    void Close();
+	void Close();
 
 	static Application& Get() { return *s_Instance; }
 	Window& GetWindow() { return *m_Window; }
