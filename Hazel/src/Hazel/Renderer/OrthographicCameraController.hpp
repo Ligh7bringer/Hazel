@@ -25,6 +25,8 @@ public:
 	void OnUpdate(Timestep dt);
 	void OnEvent(Event& e);
 
+	void Resize(float width, float height);
+
 	OrthographicCamera& GetCamera() { return m_Camera; }
 	const OrthographicCamera& GetCamera() const { return m_Camera; }
 

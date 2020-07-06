@@ -69,6 +69,14 @@ void OrthographicCameraController::OnEvent(Event& e)
 		HZ_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 }
 
+void OrthographicCameraController::Resize(float width, float height)
+{
+	m_AspectRatio = width / height;
+	m_Bounds = {
+		-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
+	m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+}
+
 bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 {
 	HZ_PROFILE_FUNCTION();
@@ -85,10 +93,11 @@ bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 {
 	HZ_PROFILE_FUNCTION();
 
-	m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-	m_Bounds = {
-		-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
-	m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+	// m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+	// m_Bounds = {
+	// 	-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel};
+	// m_Camera.SetProjection(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
+	Resize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 	return false;
 }
 
