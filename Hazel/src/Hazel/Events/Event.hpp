@@ -48,6 +48,8 @@ class HAZEL_API Event
 	friend class EventDispatcher;
 
 public:
+	virtual ~Event() = default;
+
 	virtual EventType GetEventType() const = 0;
 	virtual const char* GetName() const = 0;
 	virtual int GetCategoryFlags() const = 0;
@@ -66,7 +68,7 @@ class EventDispatcher
 public:
 	EventDispatcher(Event& event)
 		: m_Event(event)
-	{}
+	{ }
 
 	template <typename T, typename F>
 	bool Dispatch(const F& func)

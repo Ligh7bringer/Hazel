@@ -17,6 +17,8 @@ public:
 	};
 
 public:
+	virtual ~RendererAPI() = default;
+
 	static Scope<RendererAPI> Create();
 
 	virtual void Init() = 0;
