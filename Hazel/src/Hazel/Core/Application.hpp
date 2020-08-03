@@ -18,7 +18,7 @@ class Application
 {
 public:
 	Application(const std::string& name = "Hazel App");
-	virtual ~Application() = default;
+	virtual ~Application();
 
 	void Run();
 

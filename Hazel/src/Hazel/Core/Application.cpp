@@ -8,8 +8,6 @@
 namespace Hazel
 {
 
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
-
 Application* Application::s_Instance = nullptr;
 
 Application::Application(const std::string& name)
@@ -18,14 +16,20 @@ Application::Application(const std::string& name)
 
 	HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
-
 	m_Window = Window::Create(WindowProps(name));
-	m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+	m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
 
 	Renderer::Init();
 
 	m_ImGuiLayer = new ImGuiLayer();
 	PushOverlay(m_ImGuiLayer);
+}
+
+Application::~Application()
+{
+	HZ_PROFILE_FUNCTION();
+
+	Renderer::Shutdown();
 }
 
 void Application::PushLayer(Layer* layer)
@@ -36,26 +40,28 @@ void Application::PushLayer(Layer* layer)
 	layer->OnAttach();
 }
 
-void Application::PushOverlay(Layer* overlay)
+void Application::PushOverlay(Layer* layer)
 {
 	HZ_PROFILE_FUNCTION();
 
-	m_LayerStack.PushOverlay(overlay);
-	overlay->OnAttach();
+	m_LayerStack.PushOverlay(layer);
+	layer->OnAttach();
 }
 
-void Application::OnEvent(Event& event)
+void Application::Close() { m_Running = false; }
+
+void Application::OnEvent(Event& e)
 {
 	HZ_PROFILE_FUNCTION();
 
-	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+	EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<WindowCloseEvent>(HZ_BIND_EVENT_FN(Application::OnWindowClose));
+	dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(Application::OnWindowResize));
 
-	for(auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+	for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 	{
-		(*--it)->OnEvent(event);
-		if(event.Handled) break;
+		if(e.Handled) break;
+		(*it)->OnEvent(e);
 	}
 }
 
@@ -67,7 +73,7 @@ void Application::Run()
 	{
 		HZ_PROFILE_SCOPE("RunLoop");
 
-		float time = static_cast<float>(glfwGetTime());
+		float time = (float)glfwGetTime();
 		Timestep timestep = time - m_LastFrameTime;
 		m_LastFrameTime = time;
 
@@ -75,12 +81,14 @@ void Application::Run()
 		{
 			{
 				HZ_PROFILE_SCOPE("LayerStack OnUpdate");
+
 				for(Layer* layer : m_LayerStack) layer->OnUpdate(timestep);
 			}
 
 			m_ImGuiLayer->Begin();
 			{
-				HZ_PROFILE_SCOPE("LayerStack OnImGuiRender")
+				HZ_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
 				for(Layer* layer : m_LayerStack) layer->OnImGuiRender();
 			}
 			m_ImGuiLayer->End();
@@ -89,8 +97,6 @@ void Application::Run()
 		m_Window->OnUpdate();
 	}
 }
-
-void Application::Close() { m_Running = false; }
 
 bool Application::OnWindowClose(WindowCloseEvent& e)
 {
