@@ -137,7 +137,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 	constexpr float tilingFactor = 1.f;
 	const auto transform = ComputeTransformationMatrix(position, noRotation, size);
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
 }
 
 // Textures
@@ -163,7 +163,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
 	const auto transform = ComputeTransformationMatrix(position, noRotation, size);
 	const float textureIndex = GetTextureIndex(texture);
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
 }
 
 // Subtextures
@@ -190,7 +190,30 @@ void Renderer2D::DrawQuad(const glm::vec3& position,
 	const float textureIndex = GetTextureIndex(subtexture->GetTexture());
 	const glm::vec2* texCoords = subtexture->GetTextureCoords();
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor, texCoords);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor, texCoords);
+}
+
+void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour)
+{
+	HZ_PROFILE_FUNCTION();
+
+	constexpr float textureIndex = 0.f; // Default texture
+	constexpr float tilingFactor = 1.f;
+
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
+}
+
+void Renderer2D::DrawQuad(const glm::mat4& transform,
+						  const Ref<Texture2D>& texture,
+						  float tilingFactor /* = 1.f */,
+						  glm::vec4 tintColour /* = glm::vec4(1.f) */)
+{
+	HZ_PROFILE_FUNCTION();
+
+	constexpr glm::vec4 colour{1.f};
+	const float textureIndex = GetTextureIndex(texture);
+
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position,
@@ -213,7 +236,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position,
 	constexpr float tilingFactor = 1.f;
 	const auto transform = ComputeTransformationMatrix(position, rotation, size);
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
 }
 
 // Textures
@@ -242,7 +265,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position,
 	const auto transform = ComputeTransformationMatrix(position, rotation, size);
 	const float textureIndex = GetTextureIndex(texture);
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor);
 }
 
 // Subtextures
@@ -272,7 +295,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position,
 	const float textureIndex = GetTextureIndex(subtexture->GetTexture());
 	const glm::vec2* texCoords = subtexture->GetTextureCoords();
 
-	InitVertexBuffer(transform, position, size, colour, textureIndex, tilingFactor, texCoords);
+	InitVertexBuffer(transform, colour, textureIndex, tilingFactor, texCoords);
 }
 
 void Renderer2D::ResetStats() { memset(&s_Data->Stats, 0, sizeof(Statistics)); }
@@ -311,8 +334,6 @@ float Renderer2D::GetTextureIndex(const Ref<Texture2D>& texture)
 }
 
 void Renderer2D::InitVertexBuffer(const glm::mat4& transform,
-								  const glm::vec3& position,
-								  const glm::vec2& size,
 								  const glm::vec4& colour,
 								  float textureIndex,
 								  float tilingFactor,

@@ -7,6 +7,9 @@
 #include "Hazel/Core/Log.hpp"
 #include "Hazel/ImGui/ImGuiLayer.hpp"
 
+#include "Hazel/Scene/Components.hpp"
+#include "Hazel/Scene/Scene.hpp"
+
 #include "Hazel/Core/Timestep.hpp"
 
 #include "Hazel/Core/Input.hpp"
@@ -20,10 +23,10 @@
 #include "Hazel/Renderer/Renderer2D.hpp"
 
 #include "Hazel/Renderer/Buffer.hpp"
+#include "Hazel/Renderer/Framebuffer.hpp"
 #include "Hazel/Renderer/Shader.hpp"
 #include "Hazel/Renderer/SubTexture2D.hpp"
 #include "Hazel/Renderer/Texture.hpp"
 #include "Hazel/Renderer/VertexArray.hpp"
-#include "Hazel/Renderer/Framebuffer.hpp"
 
 #include "Hazel/Renderer/OrthographicCamera.hpp"

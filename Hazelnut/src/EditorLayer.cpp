@@ -27,6 +27,13 @@ void EditorLayer::OnAttach()
 	m_Framebuffer = Framebuffer::Create(fbSpec);
 
 	m_CheckerTexture = Texture2D::Create("assets/textures/checker.png");
+
+	m_ActiveScene = MakeRef<Scene>();
+
+	auto square = m_ActiveScene->CreateEntity();
+	m_ActiveScene->Reg().emplace<TransformComponent>(square);
+	m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{0.f, 1.f, 0.f, 1.f});
+	m_SquareEntity = square;
 }
 
 void EditorLayer::OnDetach() { HZ_PROFILE_FUNCTION(); }
@@ -39,52 +46,18 @@ void EditorLayer::OnUpdate(Timestep dt)
 	if(m_ViewportFocused) m_CameraController.OnUpdate(dt);
 
 	// Prepare for rendering
-	{
-		HZ_PROFILE_SCOPE("Renderer Prep");
-		m_Framebuffer->Bind();
-		RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
-		RenderCommand::Clear();
-	}
+	m_Framebuffer->Bind();
+	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
+	RenderCommand::Clear();
 
 	// Render
 	Renderer2D::ResetStats();
 
-	{
-		static float rotation = 0.f;
-		rotation += dt * 50.f;
+	Renderer2D::BeginScene(m_CameraController.GetCamera());
+	m_ActiveScene->OnUpdate(dt);
+	Renderer2D::EndScene();
 
-		HZ_PROFILE_SCOPE("Renderer Draw");
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Renderer2D::DrawRotatedQuad(
-			{1.f, 0.f}, {0.8f, 0.8f}, glm::radians(-45.f), {0.8f, 0.3f, 0.2f, 1.f});
-		Renderer2D::DrawQuad({-1.f, 0.f}, {0.8f, 0.8f}, {0.2f, 0.3f, 0.8f, 1.f});
-		Renderer2D::DrawQuad({0.5f, -0.5f}, {0.5f, 0.75f}, {0.8f, 0.2f, 0.3f, 1.f});
-		Renderer2D::DrawQuad({0.f, 0.f, -0.1f}, {20.f, 20.f}, m_CheckerTexture, 10.f);
-		Renderer2D::DrawRotatedQuad(
-			{-2.f, 0.f, 0.f}, {1.f, 1.f}, glm::radians(rotation), m_CheckerTexture, 1.f);
-
-		auto gridWidth = sqrt(m_NumQuads);
-		auto gridHeight = m_NumQuads / gridWidth + 1;
-
-		const glm::vec2 size{0.5f, 0.5f};
-		const glm::vec2 offset{0.05f, 0.05f};
-		const glm::vec2 startPos{-5.f, -5.f};
-		auto currPos = startPos;
-
-		for(int y = 0; y < gridHeight; ++y)
-		{
-			for(int x = 0; x < gridWidth; ++x)
-			{
-				glm::vec4 colour = {(x + 5.f) / 10.f, 0.4f, (y + 5.f) / 10.f, .5f};
-				Renderer2D::DrawQuad(currPos, size, colour);
-				currPos.x += size.x + offset.x;
-			}
-			currPos.x = startPos.x;
-			currPos.y += size.y + offset.y;
-		}
-		Renderer2D::EndScene();
-		m_Framebuffer->Unbind();
-	}
+	m_Framebuffer->Unbind();
 }
 
 void EditorLayer::OnImGuiRender()
@@ -144,7 +117,6 @@ void EditorLayer::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Settings");
-
 	auto stats = Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");
 	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -158,6 +130,9 @@ void EditorLayer::OnImGuiRender()
 	ImGui::InputInt("Max quads per draw call", &maxQuads);
 	ImGui::InputInt("Quads to draw", &m_NumQuads);
 	Renderer2D::SetMaxQuadsPerDrawCall(maxQuads);
+
+	auto& squareCol = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Colour;
+	ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareCol));
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});

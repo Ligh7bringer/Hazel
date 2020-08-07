@@ -23,6 +23,9 @@ private:
 	Ref<Texture2D> m_CheckerTexture;
 	Ref<Framebuffer> m_Framebuffer;
 
+	Ref<Scene> m_ActiveScene;
+	entt::entity m_SquareEntity;
+
 	glm::vec2 m_ViewportSize{0.f, 0.f};
 
 	int m_NumQuads;
