@@ -168,7 +168,8 @@ void EditorLayer::OnImGuiRender()
 	Application::Get().GetImGuiLayer()->SetBlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-	if(m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+	if(m_ViewportSize != *((glm::vec2*)&viewportPanelSize) && viewportPanelSize.x > 0 &&
+	   viewportPanelSize.y > 0)
 	{
 		m_Framebuffer->Resize(static_cast<uint32_t>(viewportPanelSize.x),
 							  static_cast<uint32_t>(viewportPanelSize.y));
