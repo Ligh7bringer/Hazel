@@ -12,3 +12,6 @@
 	path = Hazel/vendor/imgui
 	url = https://github.com/TheCherno/imgui.git
 	branch = docking
+[submodule "Hazel/vendor/entt"]
+	path = Hazel/vendor/entt
+	url = https://github.com/skypjack/entt.git

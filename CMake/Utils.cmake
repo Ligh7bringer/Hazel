@@ -7,7 +7,8 @@ function(hz_register_exe EXE_NAME SOURCES)
     ${EXE_NAME}
     PRIVATE ${PROJECT_SOURCE_DIR}/Hazel/src
             ${PROJECT_SOURCE_DIR}/Hazel/vendor/imgui
-            ${PROJECT_SOURCE_DIR}/Hazel/vendor/Glad/include)
+            ${PROJECT_SOURCE_DIR}/Hazel/vendor/Glad/include
+            ${PROJECT_SOURCE_DIR}/Hazel/vendor/entt/single_include)
 
   target_link_libraries(${EXE_NAME} PRIVATE Hazel)
 

@@ -20,7 +20,8 @@ target_include_directories(
   Hazel
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${LIB_DIR}/GLFW/include
           ${LIB_DIR}/stb_image
-  PUBLIC ${LIB_DIR}/glm ${LIB_DIR}/spdlog/include)
+  PUBLIC ${LIB_DIR}/glm ${LIB_DIR}/spdlog/include
+         ${LIB_DIR}/entt/single_include)
 
 target_compile_features(Hazel PUBLIC cxx_std_17)
 
