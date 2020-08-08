@@ -4,8 +4,12 @@
 
 #include "Hazel/Core/Timestep.hpp"
 
+#include <string>
+
 namespace Hazel
 {
+
+class Entity;
 
 class Scene
 {
@@ -13,7 +17,7 @@ public:
 	Scene();
 	~Scene();
 
-	entt::entity CreateEntity();
+	Entity CreateEntity(const std::string& name = std::string());
 
 	void OnUpdate(Timestep ts);
 
@@ -22,6 +26,8 @@ public:
 
 private:
 	entt::registry m_Registry;
+
+	friend class Entity;
 };
 
 } // namespace Hazel

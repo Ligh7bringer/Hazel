@@ -8,6 +8,7 @@
 #include "Hazel/ImGui/ImGuiLayer.hpp"
 
 #include "Hazel/Scene/Components.hpp"
+#include "Hazel/Scene/Entity.hpp"
 #include "Hazel/Scene/Scene.hpp"
 
 #include "Hazel/Core/Timestep.hpp"

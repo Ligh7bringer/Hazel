@@ -30,10 +30,8 @@ void EditorLayer::OnAttach()
 
 	m_ActiveScene = MakeRef<Scene>();
 
-	auto square = m_ActiveScene->CreateEntity();
-	m_ActiveScene->Reg().emplace<TransformComponent>(square);
-	m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{0.f, 1.f, 0.f, 1.f});
-	m_SquareEntity = square;
+	m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+	m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
 }
 
 void EditorLayer::OnDetach() { HZ_PROFILE_FUNCTION(); }
@@ -131,7 +129,11 @@ void EditorLayer::OnImGuiRender()
 	ImGui::InputInt("Quads to draw", &m_NumQuads);
 	Renderer2D::SetMaxQuadsPerDrawCall(maxQuads);
 
-	auto& squareCol = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Colour;
+	ImGui::Separator();
+	auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+	ImGui::Text("Tag: %s", tag.c_str());
+
+	auto& squareCol = m_SquareEntity.GetComponent<SpriteRendererComponent>().Colour;
 	ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareCol));
 	ImGui::End();
 

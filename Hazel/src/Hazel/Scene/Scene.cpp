@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include "Components.hpp"
+#include "Entity.hpp"
 #include "Hazel/Renderer/Renderer2D.hpp"
 
 namespace Hazel
@@ -10,7 +11,15 @@ Scene::Scene() { entt::entity entity = m_Registry.create(); }
 
 Scene::~Scene() { }
 
-entt::entity Scene::CreateEntity() { return m_Registry.create(); }
+Entity Scene::CreateEntity(const std::string& name)
+{
+	Entity entity = {m_Registry.create(), this};
+	entity.AddComponent<TransformComponent>();
+	auto& tag = entity.AddComponent<TagComponent>();
+	tag.Tag = name.empty() ? "Entity" : name;
+
+	return entity;
+}
 
 void Scene::OnUpdate(Timestep ts)
 {
