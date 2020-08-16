@@ -26,8 +26,13 @@ target_include_directories(
 target_compile_features(Hazel PUBLIC cxx_std_17)
 
 target_compile_definitions(
-  Hazel PUBLIC _CRT_SECURE_NO_WARNINGS GLFW_INCLUDE_NONE SPDLOG_HEADER_ONLY
-               $<$<CONFIG:Debug>:HZ_DEBUG>)
+  Hazel
+  PUBLIC
+  _CRT_SECURE_NO_WARNINGS
+  GLFW_INCLUDE_NONE
+  SPDLOG_HEADER_ONLY
+  $<$<CONFIG:Debug>:HZ_DEBUG>
+  $<$<BOOL:${WIN32}>:NOMINMAX>)
 target_precompile_headers(Hazel PUBLIC
                           ${CMAKE_CURRENT_SOURCE_DIR}/src/hzpch.hpp)
 
