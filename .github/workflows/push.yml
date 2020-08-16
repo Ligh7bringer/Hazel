@@ -15,11 +15,11 @@ jobs:
             os: windows-latest,
             cc: "cl", cxx: "cl",
           }
-        - {
-            name: "Windows Latest - MinGW", artifact: "windows-mingw.tar.xz",
-            os: windows-latest,
-            cc: "gcc", cxx: "g++"
-          }
+        # - {
+        #     name: "Windows Latest - MinGW", artifact: "windows-mingw.tar.xz",
+        #     os: windows-latest,
+        #     cc: "gcc", cxx: "g++"
+        #   }
         - {
             name: "Ubuntu Latest - GCC", artifact: "linux-gcc.tar.xz",
             os: ubuntu-latest,

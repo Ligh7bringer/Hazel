@@ -1,5 +1,6 @@
 # Hazel
 
-| Windows                                                                                                                                      | Linux   |
-|----------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| [![Build status](https://ci.appveyor.com/api/projects/status/9ialhsgsqke2a71x?svg=true)](https://ci.appveyor.com/project/Ligh7bringer/hazel) | [![Build Status](https://travis-ci.com/Ligh7bringer/Hazel.svg?branch=master)](https://travis-ci.com/Ligh7bringer/Hazel) |
+## CI status
+
+![CI status](https://github.com/Ligh7bringer/Hazel/workflows/Build%20Hazel/badge.svg
+)
