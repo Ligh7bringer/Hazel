@@ -12,7 +12,7 @@ EditorLayer::EditorLayer()
 	, m_CameraController(1280.f / 720.f)
 	, m_NumQuads(400)
 	, m_ViewportFocused(false)
-{ }
+{}
 
 EditorLayer::~EditorLayer() { HZ_PROFILE_FUNCTION(); }
 
@@ -32,6 +32,14 @@ void EditorLayer::OnAttach()
 
 	m_SquareEntity = m_ActiveScene->CreateEntity("Square");
 	m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
+
+	m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+	m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.f, 16.f, -9.f, 9.f, -1.f, 1.f));
+
+	m_SecondCamera = m_ActiveScene->CreateEntity("Clip Space Camera");
+	auto& cc =
+		m_SecondCamera.AddComponent<CameraComponent>(glm::ortho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f));
+	cc.Primary = false;
 }
 
 void EditorLayer::OnDetach() { HZ_PROFILE_FUNCTION(); }
@@ -51,9 +59,7 @@ void EditorLayer::OnUpdate(Timestep dt)
 	// Render
 	Renderer2D::ResetStats();
 
-	Renderer2D::BeginScene(m_CameraController.GetCamera());
 	m_ActiveScene->OnUpdate(dt);
-	Renderer2D::EndScene();
 
 	m_Framebuffer->Unbind();
 }
@@ -135,6 +141,20 @@ void EditorLayer::OnImGuiRender()
 
 	auto& squareCol = m_SquareEntity.GetComponent<SpriteRendererComponent>().Colour;
 	ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareCol));
+
+	ImGui::Separator();
+	ImGui::DragFloat3(
+		"Camera Transform",
+		glm::value_ptr(m_PrimaryCamera
+						   ? m_CameraEntity.GetComponent<TransformComponent>().Transform[3]
+						   : m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
+
+	if(ImGui::Checkbox("Camera A", &m_PrimaryCamera))
+	{
+		m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+		m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+	}
+
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});

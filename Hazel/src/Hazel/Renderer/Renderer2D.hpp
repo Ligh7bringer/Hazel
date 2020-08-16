@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Hazel/Renderer/Camera.hpp"
 #include "OrthographicCamera.hpp"
 #include "Shader.hpp"
 #include "SubTexture2D.hpp"
@@ -16,6 +17,7 @@ public:
 	static void Shutdown();
 
 	static void BeginScene(const OrthographicCamera& camera);
+	static void BeginScene(const Camera& camera, const glm::mat4& transform);
 	static void EndScene();
 	static void Flush();
 
