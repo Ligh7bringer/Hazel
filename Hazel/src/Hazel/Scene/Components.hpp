@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "Hazel/Renderer/Camera.hpp"
+#include "SceneCamera.hpp"
 
 namespace Hazel
 {
@@ -46,14 +46,12 @@ struct SpriteRendererComponent
 
 struct CameraComponent
 {
-	Hazel::Camera Camera;
+	SceneCamera Camera;
 	bool Primary{true}; // FIXME: Maybe move to Scene
+	bool FixedAspectRatio{false};
 
 	CameraComponent() = default;
 	CameraComponent(const CameraComponent&) = default;
-	CameraComponent(const glm::mat4& projection)
-		: Camera(projection)
-	{}
 };
 
 } // namespace Hazel
