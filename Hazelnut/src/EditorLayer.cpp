@@ -12,7 +12,7 @@ EditorLayer::EditorLayer()
 	, m_CameraController(1280.f / 720.f)
 	, m_NumQuads(400)
 	, m_ViewportFocused(false)
-{}
+{ }
 
 EditorLayer::~EditorLayer() { HZ_PROFILE_FUNCTION(); }
 

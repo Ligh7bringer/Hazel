@@ -57,7 +57,7 @@ struct BufferElement
 		, Size(ShaderDataTypeSize(type))
 		, Offset(0)
 		, Normalised(normalised)
-	{}
+	{ }
 
 	uint32_t GetComponentCount() const
 	{

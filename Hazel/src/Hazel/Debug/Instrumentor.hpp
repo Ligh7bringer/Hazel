@@ -33,7 +33,7 @@ public:
 	Instrumentor()
 		: m_CurrentSession(nullptr)
 		, m_ProfileCount(0)
-	{}
+	{ }
 
 	void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 	{

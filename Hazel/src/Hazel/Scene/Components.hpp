@@ -16,7 +16,7 @@ struct TagComponent
 	TagComponent(const TagComponent&) = default;
 	TagComponent(const std::string& tag)
 		: Tag(tag)
-	{}
+	{ }
 };
 
 struct TransformComponent
@@ -27,7 +27,7 @@ struct TransformComponent
 	TransformComponent(const TransformComponent&) = default;
 	TransformComponent(const glm::mat4& transform)
 		: Transform(transform)
-	{}
+	{ }
 
 	operator glm::mat4&() { return Transform; }
 	operator const glm::mat4&() const { return Transform; }
@@ -41,7 +41,7 @@ struct SpriteRendererComponent
 	SpriteRendererComponent(const SpriteRendererComponent&) = default;
 	SpriteRendererComponent(const glm::vec4& colour)
 		: Colour(colour)
-	{}
+	{ }
 };
 
 struct CameraComponent

@@ -15,7 +15,7 @@ public:
 protected:
 	KeyEvent(int keycode)
 		: m_KeyCode(keycode)
-	{}
+	{ }
 
 	int m_KeyCode;
 };
@@ -26,7 +26,7 @@ public:
 	KeyPressedEvent(int keyCode, int repeatCount)
 		: KeyEvent(keyCode)
 		, m_RepeatCount(repeatCount)
-	{}
+	{ }
 
 	int GetRepeatCount() const { return m_RepeatCount; }
 
@@ -48,7 +48,7 @@ class HAZEL_API KeyReleasedEvent : public KeyEvent
 public:
 	KeyReleasedEvent(int keyCode)
 		: KeyEvent(keyCode)
-	{}
+	{ }
 
 	std::string ToString() const override
 	{
@@ -65,7 +65,7 @@ class HAZEL_API KeyTypedEvent : public KeyEvent
 public:
 	KeyTypedEvent(int keyCode)
 		: KeyEvent(keyCode)
-	{}
+	{ }
 
 	std::string ToString() const override
 	{

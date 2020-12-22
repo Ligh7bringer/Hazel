@@ -11,7 +11,7 @@ public:
 	MouseMovedEvent(float x, float y)
 		: m_MouseX(x)
 		, m_MouseY(y)
-	{}
+	{ }
 
 	float GetX() const { return m_MouseX; }
 	float GetY() const { return m_MouseY; }
@@ -36,7 +36,7 @@ public:
 	MouseScrolledEvent(float xOffset, float yOffset)
 		: m_XOffset(xOffset)
 		, m_YOffset(yOffset)
-	{}
+	{ }
 
 	float GetXOffset() const { return m_XOffset; }
 	float GetYOffset() const { return m_YOffset; }
@@ -65,7 +65,7 @@ public:
 protected:
 	MouseButtonEvent(int button)
 		: m_Button(button)
-	{}
+	{ }
 
 	int m_Button;
 };
@@ -75,7 +75,7 @@ class HAZEL_API MouseButtonPressedEvent : public MouseButtonEvent
 public:
 	MouseButtonPressedEvent(int button)
 		: MouseButtonEvent(button)
-	{}
+	{ }
 
 	std::string ToString() const override
 	{
@@ -92,7 +92,7 @@ class HAZEL_API MouseButtonReleasedEvent : public MouseButtonEvent
 public:
 	MouseButtonReleasedEvent(int button)
 		: MouseButtonEvent(button)
-	{}
+	{ }
 
 	std::string ToString() const override
 	{

@@ -9,7 +9,7 @@ public:
 	Timestep() = default;
 	Timestep(float time)
 		: m_Time(time)
-	{}
+	{ }
 
 	operator float() const { return m_Time; }
 
