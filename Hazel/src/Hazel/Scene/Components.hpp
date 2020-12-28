@@ -5,6 +5,7 @@
 #include <string>
 
 #include "SceneCamera.hpp"
+#include "ScriptableEntity.hpp"
 
 namespace Hazel
 {
@@ -52,6 +53,26 @@ struct CameraComponent
 
 	CameraComponent() = default;
 	CameraComponent(const CameraComponent&) = default;
+};
+
+struct NativeScriptComponent
+{
+	ScriptableEntity* Instance = nullptr;
+
+	ScriptableEntity* (*InstantiateScript)();
+	void (*DestroyScript)(NativeScriptComponent*);
+
+	template <typename T>
+	void Bind()
+	{
+		// FIXME: Constructor can't have parameters
+		InstantiateScript = []() -> ScriptableEntity* { return new T(); };
+
+		DestroyScript = [](NativeScriptComponent* nsc) -> void {
+			delete nsc->Instance;
+			nsc->Instance = nullptr;
+		};
+	}
 };
 
 } // namespace Hazel

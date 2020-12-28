@@ -10,6 +10,7 @@
 #include "Hazel/Scene/Components.hpp"
 #include "Hazel/Scene/Entity.hpp"
 #include "Hazel/Scene/Scene.hpp"
+#include "Hazel/Scene/ScriptableEntity.hpp"
 
 #include "Hazel/Core/Timestep.hpp"
 

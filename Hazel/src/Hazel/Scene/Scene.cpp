@@ -7,7 +7,7 @@
 namespace Hazel
 {
 
-Scene::Scene() { entt::entity entity = m_Registry.create(); }
+Scene::Scene() { }
 
 Scene::~Scene() { }
 
@@ -23,6 +23,20 @@ Entity Scene::CreateEntity(const std::string& name)
 
 void Scene::OnUpdate(Timestep ts)
 {
+	// Update scripts
+	{
+		// FIXME: This should happen during runtime when it is implemented
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
+			if(!nsc.Instance)
+			{
+				nsc.Instance = nsc.InstantiateScript();
+				nsc.Instance->m_Entity = Entity{entity, this};
+				nsc.Instance->OnCreate();
+			}
+
+			nsc.Instance->OnUpdate(ts);
+		});
+	}
 
 	Camera* mainCamera = nullptr;
 	glm::mat4* cameraTransform = nullptr;
@@ -30,7 +44,7 @@ void Scene::OnUpdate(Timestep ts)
 		auto view = m_Registry.view<CameraComponent, TransformComponent>();
 		for(auto entity : view)
 		{
-			const auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+			auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
 			if(camera.Primary)
 			{
@@ -48,7 +62,7 @@ void Scene::OnUpdate(Timestep ts)
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for(auto entity : group)
 		{
-			const auto& [transform, sprite] =
+			auto [transform, sprite] =
 				group.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			Renderer2D::DrawQuad(transform, sprite.Colour);
