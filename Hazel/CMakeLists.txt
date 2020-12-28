@@ -3,7 +3,7 @@ option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW)
 
-file(GLOB_RECURSE HAZEL_SRCS src/*.h src/*.cpp)
+file(GLOB_RECURSE HAZEL_SRCS src/*.hpp src/*.cpp)
 add_library(Hazel STATIC ${HAZEL_SRCS})
 
 set(GLAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Glad)
