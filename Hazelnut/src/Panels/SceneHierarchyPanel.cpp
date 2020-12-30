@@ -167,6 +167,19 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
 			ImGui::TreePop();
 		}
 	}
+
+	if(entity.HasComponent<SpriteRendererComponent>())
+	{
+		if(ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(SpriteRendererComponent).hash_code()),
+							 ImGuiTreeNodeFlags_DefaultOpen,
+							 "%s",
+							 "Sprite Renderer"))
+		{
+			auto& src = entity.GetComponent<SpriteRendererComponent>();
+			ImGui::ColorEdit4("Color", glm::value_ptr(src.Colour));
+			ImGui::TreePop();
+		}
+	}
 }
 
 } // namespace Hazel
