@@ -48,21 +48,21 @@ void EditorLayer::OnAttach()
 	public:
 		void OnCreate()
 		{
-			auto& transform = GetComponent<TransformComponent>().Transform;
-			transform[3][0] = rand() % 10 - 5.f;
+			auto& translation = GetComponent<TransformComponent>().Translation;
+			translation.x = rand() % 10 - 5.f;
 		}
 
 		void OnDestroy() { }
 
 		void OnUpdate(Timestep ts)
 		{
-			auto& transform = GetComponent<TransformComponent>().Transform;
+			auto& translation = GetComponent<TransformComponent>().Translation;
 			constexpr float speed = 5.f;
 
-			if(Input::IsKeyPressed(HZ_KEY_A)) transform[3][0] -= speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_D)) transform[3][0] += speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_W)) transform[3][1] += speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_S)) transform[3][1] -= speed * ts;
+			if(Input::IsKeyPressed(HZ_KEY_A)) translation.x -= speed * ts;
+			if(Input::IsKeyPressed(HZ_KEY_D)) translation.x += speed * ts;
+			if(Input::IsKeyPressed(HZ_KEY_W)) translation.y += speed * ts;
+			if(Input::IsKeyPressed(HZ_KEY_S)) translation.y -= speed * ts;
 		}
 	};
 
