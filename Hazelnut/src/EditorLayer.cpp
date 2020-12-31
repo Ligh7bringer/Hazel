@@ -30,8 +30,8 @@ void EditorLayer::OnAttach()
 
 	m_ActiveScene = MakeRef<Scene>();
 
-	m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
-	m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
+	auto square = m_ActiveScene->CreateEntity("Green Square");
+	square.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
 
 	auto redSquare = m_ActiveScene->CreateEntity("Red Square");
 	redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{1.f, 0.f, 0.f, 1.f});

@@ -16,6 +16,7 @@ void Sandbox2D::OnAttach()
 {
 	HZ_PROFILE_FUNCTION();
 
+#if 0
 	m_CheckerTexture = Hazel::Texture2D::Create("assets/textures/checker.png");
 	m_SpriteSheet = Hazel::Texture2D::Create("assets/demo/textures/RPGpack_sheet_2X.png");
 	m_StairsTexture = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {7, 6}, {128, 128});
@@ -31,6 +32,7 @@ void Sandbox2D::OnAttach()
 	m_Particle.Velocity = {0.0f, 0.0f};
 	m_Particle.VelocityVariation = {3.0f, 1.0f};
 	m_Particle.Position = {0.0f, 0.0f};
+#endif
 }
 
 void Sandbox2D::OnDetach() { HZ_PROFILE_FUNCTION(); }
@@ -39,6 +41,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 {
 	HZ_PROFILE_FUNCTION();
 
+#if 0
 	// Update camera
 	m_CameraController.OnUpdate(dt);
 
@@ -52,7 +55,6 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 	// Render
 	Hazel::Renderer2D::ResetStats();
 
-#if 0
 	{
 		static float rotation = 0.f;
 		rotation += dt * 50.f;
@@ -88,7 +90,6 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 		}
 		Hazel::Renderer2D::EndScene();
 	}
-#endif
 
 	if(Hazel::Input::IsMouseBtnPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
@@ -113,6 +114,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep dt)
 	Hazel::Renderer2D::DrawQuad({1.f, 0.f, 0.5f}, {1.f, 1.f}, m_BarrelTexture);
 	Hazel::Renderer2D::DrawQuad({-1.f, 0.f, 0.5f}, {1.f, 2.f}, m_TreeTexture);
 	Hazel::Renderer2D::EndScene();
+#endif
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -132,13 +134,6 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("Quads: %d", stats.QuadCount);
 	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-	ImGui::End();
-
-	ImGui::Begin("Renderer settings");
-	static int maxQuads = 20000;
-	ImGui::InputInt("Max quads per draw call", &maxQuads);
-	ImGui::InputInt("Quads to draw", &m_NumQuads);
-	Hazel::Renderer2D::SetMaxQuadsPerDrawCall(maxQuads);
 	ImGui::End();
 }
 

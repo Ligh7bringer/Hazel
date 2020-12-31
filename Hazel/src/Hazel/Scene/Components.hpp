@@ -16,7 +16,7 @@ struct TagComponent
 	std::string Tag;
 	TagComponent() = default;
 	TagComponent(const TagComponent&) = default;
-	TagComponent(const std::string& tag)
+	explicit TagComponent(const std::string& tag)
 		: Tag(tag)
 	{ }
 };
@@ -50,7 +50,7 @@ struct SpriteRendererComponent
 
 	SpriteRendererComponent() = default;
 	SpriteRendererComponent(const SpriteRendererComponent&) = default;
-	SpriteRendererComponent(const glm::vec4& colour)
+	explicit SpriteRendererComponent(const glm::vec4& colour)
 		: Colour(colour)
 	{ }
 };
@@ -78,6 +78,7 @@ struct NativeScriptComponent
 		// FIXME: Constructor can't have parameters
 		InstantiateScript = []() -> ScriptableEntity* { return new T(); };
 
+		// FIXME: Actually call this function to free the allocated memory for Instance
 		DestroyScript = [](NativeScriptComponent* nsc) -> void {
 			delete nsc->Instance;
 			nsc->Instance = nullptr;

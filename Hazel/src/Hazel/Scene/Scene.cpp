@@ -21,6 +21,8 @@ Entity Scene::CreateEntity(const std::string& name)
 	return entity;
 }
 
+void Scene::DestroyEntity(Entity entity) { m_Registry.destroy(entity); }
+
 void Scene::OnUpdate(Timestep ts)
 {
 	// Update scripts
@@ -87,6 +89,30 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height)
 			cameraComponent.Camera.SetViewportSize(width, height);
 		}
 	}
+}
+
+template <typename T>
+void Scene::OnComponentAdded(Entity entity, T& component)
+{
+	HZ_CORE_ERROR("Unreachable!");
+}
+
+#define DECLARE_ADD_COMPONENT_CALLBACK_STUB(COMPONENT_TYPE)                                        \
+	template <>                                                                                    \
+	void Scene::OnComponentAdded<COMPONENT_TYPE>(Entity entity, COMPONENT_TYPE & component)        \
+	{ }
+
+DECLARE_ADD_COMPONENT_CALLBACK_STUB(TransformComponent)
+DECLARE_ADD_COMPONENT_CALLBACK_STUB(SpriteRendererComponent)
+DECLARE_ADD_COMPONENT_CALLBACK_STUB(TagComponent)
+DECLARE_ADD_COMPONENT_CALLBACK_STUB(NativeScriptComponent)
+
+#undef DECLARE_ADD_COMPONENT_CALLBACK_STUB
+
+template <>
+void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+{
+	component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 }
 
 } // namespace Hazel
