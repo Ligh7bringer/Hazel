@@ -4,10 +4,14 @@
 #include "Hazel/Events/KeyEvent.hpp"
 #include "Hazel/Events/MouseEvent.hpp"
 
+#include "Hazel/Renderer/Renderer.hpp"
+
 #include "Platform/OpenGL/OpenGLContext.hpp"
 
 namespace Hazel
 {
+
+float Window::s_HighDPIScaleFactor = 1.0f;
 
 static uint8_t s_GLFWWindowCount = 0;
 
@@ -58,11 +62,23 @@ void WindowsWindow::Init(const WindowProps& props)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
 #ifdef HZ_ENABLE_RENDERER_LOG
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	if(Renderer::GetAPI() == RendererAPI::API::OpenGL)
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 
 	{
 		HZ_PROFILE_SCOPE("glfwCreateWindow")
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		float xscale, yscale;
+		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
+
+		if(xscale > 1.0f || yscale > 1.0f)
+		{
+			s_HighDPIScaleFactor = yscale;
+			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+		}
+
 		m_Window = glfwCreateWindow(
 			(int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;

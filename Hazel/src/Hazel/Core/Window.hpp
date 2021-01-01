@@ -42,6 +42,8 @@ public:
 	virtual void* GetNativeWindow() const = 0;
 
 	static Scope<Window> Create(const WindowProps& props = WindowProps());
+
+	static float s_HighDPIScaleFactor;
 };
 
 } // namespace Hazel
