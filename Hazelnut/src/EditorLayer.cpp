@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Hazel/Scene/SceneSerializer.hpp"
+
 namespace Hazel
 {
 
@@ -30,6 +32,7 @@ void EditorLayer::OnAttach()
 
 	m_ActiveScene = MakeRef<Scene>();
 
+#if 0
 	auto square = m_ActiveScene->CreateEntity("Green Square");
 	square.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
 
@@ -68,6 +71,7 @@ void EditorLayer::OnAttach()
 
 	m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+#endif
 
 	m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
@@ -155,6 +159,19 @@ void EditorLayer::OnImGuiRender()
 	{
 		if(ImGui::BeginMenu("File"))
 		{
+			if(ImGui::MenuItem("Serialize"))
+			{
+				SceneSerializer serializer(m_ActiveScene);
+				serializer.Serialize("assets/scenes/Example.hazel");
+			}
+
+			if(ImGui::MenuItem("Deserialize"))
+			{
+				// FIXME: Destroy current scene before deserialization
+				SceneSerializer serializer(m_ActiveScene);
+				serializer.Deserialize("assets/scenes/Example.hazel");
+			}
+
 			if(ImGui::MenuItem("Exit")) Application::Get().Close();
 			ImGui::EndMenu();
 		}

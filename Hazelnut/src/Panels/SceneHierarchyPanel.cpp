@@ -307,7 +307,7 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
 				camera.SetPerspectiveNearClip(perspectiveNear);
 			}
 
-			float perspectiveFar = camera.GePerspectiveFarClip();
+			float perspectiveFar = camera.GetPerspectiveFarClip();
 			if(ImGui::DragFloat("Far", &perspectiveFar))
 			{
 				camera.SetPerspectiveFarClip(perspectiveFar);

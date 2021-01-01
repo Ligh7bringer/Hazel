@@ -1,10 +1,11 @@
 #pragma once
 
+#include <string>
+
 #include "entt/entt.hpp"
 
 #include "Hazel/Core/Timestep.hpp"
-
-#include <string>
+#include "SceneSerializer.hpp"
 
 namespace Hazel
 {
@@ -33,6 +34,7 @@ private:
 
 	friend class Entity;
 	friend class SceneHierarchyPanel;
+	friend class SceneSerializer;
 };
 
 } // namespace Hazel

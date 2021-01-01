@@ -44,7 +44,7 @@ public:
 		RecalculateProjection();
 	}
 
-	float GePerspectiveFarClip() const { return m_PerspectiveFar; }
+	float GetPerspectiveFarClip() const { return m_PerspectiveFar; }
 	void SetPerspectiveFarClip(float value)
 	{
 		m_PerspectiveFar = value;
