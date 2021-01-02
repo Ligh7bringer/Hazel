@@ -18,3 +18,6 @@
 [submodule "Hazel/vendor/yaml-cpp"]
 	path = Hazel/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "Hazel/vendor/nfd"]
+	path = Hazel/vendor/nfd
+	url = https://github.com/Ligh7bringer/nativefiledialog-extended.git

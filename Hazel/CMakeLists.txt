@@ -16,7 +16,8 @@ add_library(imgui STATIC ${IMGUI_SRCS})
 target_include_directories(imgui PUBLIC ${IMGUI_DIR})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/yaml-cpp)
-message(STATUS "YAML CPP INCLUDE DIR: ${YAML_CPP_INCLUDE_DIR}")
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/nfd)
 
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 target_include_directories(
@@ -24,7 +25,8 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${LIB_DIR}/GLFW/include
           ${LIB_DIR}/stb_image
   PUBLIC ${LIB_DIR}/glm ${LIB_DIR}/spdlog/include
-         ${LIB_DIR}/entt/single_include ${LIB_DIR}/yaml-cpp/include)
+         ${LIB_DIR}/entt/single_include ${LIB_DIR}/yaml-cpp/include
+         ${LIB_DIR}/nfd/src/include)
 
 target_compile_features(Hazel PUBLIC cxx_std_17)
 
@@ -37,6 +39,6 @@ target_precompile_headers(Hazel PUBLIC
 target_link_libraries(
   Hazel
   PRIVATE glfw glad imgui
-  PUBLIC yaml-cpp::yaml-cpp)
+  PUBLIC yaml-cpp::yaml-cpp nfd)
 
-set_target_properties(glfw glad imgui yaml-cpp PROPERTIES FOLDER vendor)
+set_target_properties(glfw glad imgui yaml-cpp nfd PROPERTIES FOLDER vendor)
