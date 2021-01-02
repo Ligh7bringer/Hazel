@@ -1,11 +1,14 @@
 #include "EditorLayer.hpp"
 
-#include "imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 
+#include <ImGuizmo.h>
+
+#include "Hazel/Math/Math.hpp"
 #include "Hazel/Scene/SceneSerializer.hpp"
-#include "Utils/Utils.hpp"
+#include "Hazel/Utils/Utils.hpp"
 
 namespace Hazel
 {
@@ -181,6 +184,25 @@ void EditorLayer::OnImGuiRender()
 			ImGui::EndMenu();
 		}
 
+		if(ImGui::BeginMenu("Gizmos"))
+		{
+			if(ImGui::MenuItem("Hidden", "Q", m_GizmoType == -1)) m_GizmoType = -1;
+
+			if(ImGui::MenuItem("Translation", "W", m_GizmoType == ImGuizmo::OPERATION::TRANSLATE))
+				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+
+			if(ImGui::MenuItem("Rotation", "E", m_GizmoType == ImGuizmo::OPERATION::ROTATE))
+				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+
+			if(ImGui::MenuItem("Scale", "R", m_GizmoType == ImGuizmo::OPERATION::SCALE))
+				m_GizmoType = ImGuizmo::OPERATION::SCALE;
+			ImGui::Separator();
+
+			if(ImGui::MenuItem("Snap", "Ctrl", m_ShouldSnap)) m_ShouldSnap = !m_ShouldSnap;
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMenuBar();
 	}
 
@@ -201,10 +223,9 @@ void EditorLayer::OnImGuiRender()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 	ImGui::Begin("Viewport");
-
 	m_ViewportFocused = ImGui::IsWindowFocused();
 	m_ViewportHovered = ImGui::IsWindowHovered();
-	Application::Get().GetImGuiLayer()->SetBlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+	Application::Get().GetImGuiLayer()->SetBlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
@@ -214,6 +235,58 @@ void EditorLayer::OnImGuiRender()
 				 ImVec2{m_ViewportSize.x, m_ViewportSize.y},
 				 ImVec2{0, 1},
 				 ImVec2{1, 0});
+
+	// Gizmos
+	Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+	if(selectedEntity && m_GizmoType != -1)
+	{
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist();
+		const float windowWidth = ImGui::GetWindowWidth();
+		const float windowHeight = ImGui::GetWindowHeight();
+		ImGuizmo::SetRect(
+			ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+		// Camera
+		auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+		const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+		const glm::mat4& cameraProjection = camera.GetProjection();
+		glm::mat4 cameraView =
+			glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+		// Entity
+		auto& tc = selectedEntity.GetComponent<TransformComponent>();
+		glm::mat4 transform = tc.GetTransform();
+
+		// Snapping
+		const bool snap = Input::IsKeyPressed(HZ_KEY_LEFT_CONTROL);
+		// Snap value for translation
+		float snapValue = 0.5f;
+		// Snap value for rotation
+		if(m_GizmoType == ImGuizmo::OPERATION::ROTATE) snapValue = 45.f;
+		float snapValues[3] = {snapValue, snapValue, snapValue};
+
+		ImGuizmo::Manipulate(glm::value_ptr(cameraView),
+							 glm::value_ptr(cameraProjection),
+							 static_cast<ImGuizmo::OPERATION>(m_GizmoType),
+							 ImGuizmo::MODE::LOCAL,
+							 glm::value_ptr(transform),
+							 nullptr,
+							 (snap || m_ShouldSnap) ? snapValues : nullptr);
+
+		if(ImGuizmo::IsUsing())
+		{
+			glm::vec3 translation, rotation, scale;
+			Math::DecomposeTransform(transform, translation, rotation, scale);
+
+			tc.Translation = translation;
+			// Use delta rotation to avoid Gimbal lock
+			glm::vec3 deltaRotation = rotation - tc.Rotation;
+			tc.Rotation += deltaRotation;
+			tc.Scale = scale;
+		}
+	}
+
 	ImGui::End();
 	ImGui::PopStyleVar();
 
@@ -248,6 +321,24 @@ bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
 	}
 	case HZ_KEY_S: {
 		if(controlPressed && shiftPressed) SaveSceneAs();
+		return true;
+	}
+
+	// Gizmos
+	case HZ_KEY_Q: {
+		m_GizmoType = -1;
+		return true;
+	}
+	case HZ_KEY_W: {
+		m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		return true;
+	}
+	case HZ_KEY_E: {
+		m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+		return true;
+	}
+	case HZ_KEY_R: {
+		m_GizmoType = ImGuizmo::OPERATION::SCALE;
 		return true;
 	}
 

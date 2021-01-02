@@ -40,6 +40,9 @@ private:
 	int m_NumQuads;
 	bool m_ViewportFocused = false, m_ViewportHovered = false;
 
+	int m_GizmoType = -1;
+	bool m_ShouldSnap = false;
+
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 };
 
