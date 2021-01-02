@@ -11,12 +11,14 @@ add_library(glad STATIC ${GLAD_DIR}/include/glad/glad.h ${GLAD_DIR}/src/glad.c)
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui)
-file(GLOB IMGUI_SRCS ${IMGUI_DIR}/*.h ${IMGUI_DIR}/*.cpp)
+# Compile ImGuizmo as a part of ImGui
+file(GLOB IMGUI_SRCS ${IMGUI_DIR}/*.h ${IMGUI_DIR}/*.cpp
+     vendor/ImGuizmo/ImGuizmo.h vendor/ImGuizmo/ImGuizmo.cpp)
 add_library(imgui STATIC ${IMGUI_SRCS})
-target_include_directories(imgui PUBLIC ${IMGUI_DIR})
+# Whichever target links with the imgui target will get the include directories
+target_include_directories(imgui PUBLIC ${IMGUI_DIR} vendor/ImGuizmo)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/yaml-cpp)
-
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/nfd)
 
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
@@ -38,7 +40,7 @@ target_precompile_headers(Hazel PUBLIC
 
 target_link_libraries(
   Hazel
-  PRIVATE glfw glad imgui
-  PUBLIC yaml-cpp::yaml-cpp nfd)
+  PRIVATE glfw glad
+  PUBLIC imgui yaml-cpp::yaml-cpp nfd)
 
 set_target_properties(glfw glad imgui yaml-cpp nfd PROPERTIES FOLDER vendor)

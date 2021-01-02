@@ -21,3 +21,6 @@
 [submodule "Hazel/vendor/nfd"]
 	path = Hazel/vendor/nfd
 	url = https://github.com/Ligh7bringer/nativefiledialog-extended.git
+[submodule "Hazel/vendor/ImGuizmo"]
+	path = Hazel/vendor/ImGuizmo
+	url = https://github.com/TheCherno/ImGuizmo.git
