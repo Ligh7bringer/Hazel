@@ -20,6 +20,13 @@ public:
 	virtual void OnEvent(Event& event) override;
 
 private:
+	bool OnKeyPressed(KeyPressedEvent& event);
+
+	void NewScene();
+	void OpenScene();
+	void SaveSceneAs();
+
+private:
 	OrthographicCameraController m_CameraController;
 	Ref<Texture2D> m_CheckerTexture;
 	Ref<Framebuffer> m_Framebuffer;

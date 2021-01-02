@@ -11,7 +11,11 @@ namespace Hazel
 
 SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) { SetContext(context); }
 
-void SceneHierarchyPanel::SetContext(const Ref<Scene>& context) { m_Context = context; }
+void SceneHierarchyPanel::SetContext(const Ref<Scene>& context)
+{
+	m_Context = context;
+	m_SelectionContext = {};
+}
 
 void SceneHierarchyPanel::OnImGuiRender()
 {

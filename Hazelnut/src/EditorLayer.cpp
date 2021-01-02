@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Hazel/Scene/SceneSerializer.hpp"
+#include "Utils/Utils.hpp"
 
 namespace Hazel
 {
@@ -159,18 +160,22 @@ void EditorLayer::OnImGuiRender()
 	{
 		if(ImGui::BeginMenu("File"))
 		{
-			if(ImGui::MenuItem("Serialize"))
+			if(ImGui::MenuItem("New", "Ctrl+N"))
 			{
-				SceneSerializer serializer(m_ActiveScene);
-				serializer.Serialize("assets/scenes/Example.hazel");
+				NewScene();
+			}
+			ImGui::Separator();
+
+			if(ImGui::MenuItem("Open...", "Ctrl+O"))
+			{
+				OpenScene();
 			}
 
-			if(ImGui::MenuItem("Deserialize"))
+			if(ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 			{
-				// FIXME: Destroy current scene before deserialization
-				SceneSerializer serializer(m_ActiveScene);
-				serializer.Deserialize("assets/scenes/Example.hazel");
+				SaveSceneAs();
 			}
+			ImGui::Separator();
 
 			if(ImGui::MenuItem("Exit")) Application::Get().Close();
 			ImGui::EndMenu();
@@ -215,6 +220,69 @@ void EditorLayer::OnImGuiRender()
 	ImGui::End();
 }
 
-void EditorLayer::OnEvent(Event& event) { m_CameraController.OnEvent(event); }
+void EditorLayer::OnEvent(Event& event)
+{
+	m_CameraController.OnEvent(event);
+
+	EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+}
+
+bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+{
+	if(event.GetRepeatCount() > 0) return false;
+
+	const bool controlPressed =
+		Input::IsKeyPressed(HZ_KEY_LEFT_CONTROL) || Input::IsKeyPressed(HZ_KEY_RIGHT_CONTROL);
+	const bool shiftPressed =
+		Input::IsKeyPressed(HZ_KEY_LEFT_SHIFT) || Input::IsKeyPressed(HZ_KEY_RIGHT_SHIFT);
+	switch(event.GetKeyCode())
+	{
+	case HZ_KEY_N: {
+		if(controlPressed) NewScene();
+		return true;
+	}
+	case HZ_KEY_O: {
+		if(controlPressed) OpenScene();
+		return true;
+	}
+	case HZ_KEY_S: {
+		if(controlPressed && shiftPressed) SaveSceneAs();
+		return true;
+	}
+
+	default: return false;
+	}
+}
+
+void EditorLayer::NewScene()
+{
+	m_ActiveScene = MakeRef<Scene>();
+	m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x),
+									static_cast<uint32_t>(m_ViewportSize.y));
+	m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+}
+
+void EditorLayer::OpenScene()
+{
+	const std::string filepath = FileDialogs::OpenFile("Hazel Scene", "hazel");
+	if(!filepath.empty())
+	{
+		NewScene();
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Deserialize(filepath);
+	}
+}
+
+void EditorLayer::SaveSceneAs()
+{
+	const std::string filepath = FileDialogs::SaveFile("Hazel Scene", "hazel");
+	if(!filepath.empty())
+	{
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Serialize(filepath);
+	}
+}
 
 } // namespace Hazel
