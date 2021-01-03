@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hazel.hpp"
+#include "Hazel/Renderer/EditorCamera.hpp"
 #include "Panels/SceneHierarchyPanel.hpp"
 
 namespace Hazel
@@ -34,6 +35,7 @@ private:
 	Ref<Scene> m_ActiveScene;
 	Entity m_CameraEntity, m_SecondCamera;
 	bool m_PrimaryCamera = true;
+	EditorCamera m_EditorCamera;
 
 	glm::vec2 m_ViewportSize{0.f, 0.f};
 

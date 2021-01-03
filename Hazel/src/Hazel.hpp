@@ -16,7 +16,7 @@
 
 #include "Hazel/Core/Input.hpp"
 #include "Hazel/Core/KeyCodes.hpp"
-#include "Hazel/Core/MouseBtnCodes.hpp"
+#include "Hazel/Core/MouseCodes.hpp"
 #include "Hazel/Events/Event.hpp"
 #include "Hazel/Renderer/OrthographicCameraController.hpp"
 

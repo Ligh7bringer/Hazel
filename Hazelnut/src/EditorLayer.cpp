@@ -36,6 +36,8 @@ void EditorLayer::OnAttach()
 
 	m_ActiveScene = MakeRef<Scene>();
 
+	m_EditorCamera = EditorCamera(30.f, 16.f / 9.f, 0.1f, 1000.f);
+
 #if 0
 	auto square = m_ActiveScene->CreateEntity("Green Square");
 	square.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
@@ -93,23 +95,26 @@ void EditorLayer::OnUpdate(Timestep dt)
 	{
 		m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_CameraController.Resize(m_ViewportSize.x, m_ViewportSize.y);
-
+		m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 		m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x),
 										static_cast<uint32_t>(m_ViewportSize.y));
 	}
 
 	// Update camera
-	if(m_ViewportFocused) m_CameraController.OnUpdate(dt);
+	if(m_ViewportFocused)
+	{
+		m_CameraController.OnUpdate(dt);
+	}
 
-	// Prepare for rendering
+	m_EditorCamera.OnUpdate(dt);
+
+	// Render
+	Renderer2D::ResetStats();
 	m_Framebuffer->Bind();
 	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
 	RenderCommand::Clear();
 
-	// Render
-	Renderer2D::ResetStats();
-
-	m_ActiveScene->OnUpdate(dt);
+	m_ActiveScene->OnUpdateEditor(dt, m_EditorCamera);
 
 	m_Framebuffer->Unbind();
 }
@@ -247,12 +252,16 @@ void EditorLayer::OnImGuiRender()
 		ImGuizmo::SetRect(
 			ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-		// Camera
-		auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-		const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-		const glm::mat4& cameraProjection = camera.GetProjection();
-		glm::mat4 cameraView =
-			glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+		// Runtime camera
+		// auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+		// const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+		// const glm::mat4& cameraProjection = camera.GetProjection();
+		// glm::mat4 cameraView =
+		// 	glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+		// Editor camera
+		const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+		glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
 
 		// Entity
 		auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -296,6 +305,7 @@ void EditorLayer::OnImGuiRender()
 void EditorLayer::OnEvent(Event& event)
 {
 	m_CameraController.OnEvent(event);
+	m_EditorCamera.OnEvent(event);
 
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
