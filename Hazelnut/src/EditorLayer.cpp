@@ -27,6 +27,7 @@ void EditorLayer::OnAttach()
 	HZ_PROFILE_FUNCTION();
 
 	FramebufferSpecification fbSpec;
+	fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth};
 	// FIXME: Shouldn't be hardcoded
 	fbSpec.Width = 1280;
 	fbSpec.Height = 720;
@@ -37,47 +38,6 @@ void EditorLayer::OnAttach()
 	m_ActiveScene = MakeRef<Scene>();
 
 	m_EditorCamera = EditorCamera(30.f, 16.f / 9.f, 0.1f, 1000.f);
-
-#if 0
-	auto square = m_ActiveScene->CreateEntity("Green Square");
-	square.AddComponent<SpriteRendererComponent>(glm::vec4{0.f, 1.f, 0.f, 1.f});
-
-	auto redSquare = m_ActiveScene->CreateEntity("Red Square");
-	redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{1.f, 0.f, 0.f, 1.f});
-
-	m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-	m_CameraEntity.AddComponent<CameraComponent>();
-
-	m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-	auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-	cc.Primary = false;
-
-	class CameraController : public ScriptableEntity
-	{
-	public:
-		void OnCreate()
-		{
-			auto& translation = GetComponent<TransformComponent>().Translation;
-			translation.x = rand() % 10 - 5.f;
-		}
-
-		void OnDestroy() { }
-
-		void OnUpdate(Timestep ts)
-		{
-			auto& translation = GetComponent<TransformComponent>().Translation;
-			constexpr float speed = 5.f;
-
-			if(Input::IsKeyPressed(HZ_KEY_A)) translation.x -= speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_D)) translation.x += speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_W)) translation.y += speed * ts;
-			if(Input::IsKeyPressed(HZ_KEY_S)) translation.y -= speed * ts;
-		}
-	};
-
-	m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-	m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
 
 	m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 }
