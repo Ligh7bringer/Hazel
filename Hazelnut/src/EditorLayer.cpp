@@ -27,7 +27,9 @@ void EditorLayer::OnAttach()
 	HZ_PROFILE_FUNCTION();
 
 	FramebufferSpecification fbSpec;
-	fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth};
+	fbSpec.Attachments = {FramebufferTextureFormat::RGBA8,
+						  FramebufferTextureFormat::RED_INTEGER,
+						  FramebufferTextureFormat::Depth};
 	// FIXME: Shouldn't be hardcoded
 	fbSpec.Width = 1280;
 	fbSpec.Height = 720;
@@ -74,7 +76,27 @@ void EditorLayer::OnUpdate(Timestep dt)
 	RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.f});
 	RenderCommand::Clear();
 
+	m_Framebuffer->ClearAttachment(1, -1);
+
 	m_ActiveScene->OnUpdateEditor(dt, m_EditorCamera);
+
+	auto [mx, my] = ImGui::GetMousePos();
+	mx -= m_ViewportBounds[0].x;
+	my -= m_ViewportBounds[0].y;
+	glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+	// Flip y
+	my = viewportSize.y - my;
+	const auto mouseX = static_cast<int>(mx);
+	const auto mouseY = static_cast<int>(my);
+
+	if(mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) &&
+	   mouseY < static_cast<int>(viewportSize.y))
+	{
+		const int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+		m_HoveredEntity = pixelData == -1
+							  ? Entity()
+							  : Entity(static_cast<entt::entity>(pixelData), m_ActiveScene.get());
+	}
 
 	m_Framebuffer->Unbind();
 }
@@ -179,6 +201,14 @@ void EditorLayer::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Stats");
+
+	std::string name = "None";
+	if(m_HoveredEntity)
+	{
+		name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+	}
+	ImGui::Text("Hovered Entity: %s", name.c_str());
+
 	auto stats = Renderer2D::GetStats();
 	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 	ImGui::Text("Quads: %d", stats.QuadCount);
@@ -188,6 +218,9 @@ void EditorLayer::OnImGuiRender()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 	ImGui::Begin("Viewport");
+	// Includes the tab bar
+	const auto viewportOffset = ImGui::GetCursorPos();
+
 	m_ViewportFocused = ImGui::IsWindowFocused();
 	m_ViewportHovered = ImGui::IsWindowHovered();
 	Application::Get().GetImGuiLayer()->SetBlockEvents(!m_ViewportFocused && !m_ViewportHovered);
@@ -200,6 +233,15 @@ void EditorLayer::OnImGuiRender()
 				 ImVec2{m_ViewportSize.x, m_ViewportSize.y},
 				 ImVec2{0, 1},
 				 ImVec2{1, 0});
+
+	const auto windowSize = ImGui::GetWindowSize();
+	auto minBound = ImGui::GetWindowPos();
+	minBound.x += viewportOffset.x;
+	minBound.y += viewportOffset.y;
+
+	ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
+	m_ViewportBounds[0] = {minBound.x, minBound.y};
+	m_ViewportBounds[1] = {maxBound.x, maxBound.y};
 
 	// Gizmos
 	Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();

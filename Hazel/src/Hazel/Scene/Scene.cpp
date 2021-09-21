@@ -32,7 +32,7 @@ void Scene::OnUpdateEditor(Timestep, EditorCamera& camera)
 	{
 		auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-		Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour);
+		Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 	}
 
 	Renderer2D::EndScene();
@@ -82,7 +82,7 @@ void Scene::OnUpdateRuntime(Timestep ts)
 			auto [transform, sprite] =
 				group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::DrawQuad(transform.GetTransform(), sprite.Colour);
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 		}
 
 		Renderer2D::EndScene();

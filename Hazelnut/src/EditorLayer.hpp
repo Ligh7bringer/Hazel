@@ -36,8 +36,10 @@ private:
 	Entity m_CameraEntity, m_SecondCamera;
 	bool m_PrimaryCamera = true;
 	EditorCamera m_EditorCamera;
+	Entity m_HoveredEntity;
 
 	glm::vec2 m_ViewportSize{0.f, 0.f};
+	glm::vec2 m_ViewportBounds[2];
 
 	int m_NumQuads;
 	bool m_ViewportFocused = false, m_ViewportHovered = false;
