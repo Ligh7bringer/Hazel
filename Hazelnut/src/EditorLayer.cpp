@@ -218,9 +218,13 @@ void EditorLayer::OnImGuiRender()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 	ImGui::Begin("Viewport");
-	// Includes the tab bar
-	const auto viewportOffset = ImGui::GetCursorPos();
-
+	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+	auto viewportOffset = ImGui::GetWindowPos();
+	m_ViewportBounds[0] = {viewportMinRegion.x + viewportOffset.x,
+						   viewportMinRegion.y + viewportOffset.y};
+	m_ViewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x,
+						   viewportMaxRegion.y + viewportOffset.y};
 	m_ViewportFocused = ImGui::IsWindowFocused();
 	m_ViewportHovered = ImGui::IsWindowHovered();
 	Application::Get().GetImGuiLayer()->SetBlockEvents(!m_ViewportFocused && !m_ViewportHovered);
@@ -234,25 +238,16 @@ void EditorLayer::OnImGuiRender()
 				 ImVec2{0, 1},
 				 ImVec2{1, 0});
 
-	const auto windowSize = ImGui::GetWindowSize();
-	auto minBound = ImGui::GetWindowPos();
-	minBound.x += viewportOffset.x;
-	minBound.y += viewportOffset.y;
-
-	ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
-	m_ViewportBounds[0] = {minBound.x, minBound.y};
-	m_ViewportBounds[1] = {maxBound.x, maxBound.y};
-
 	// Gizmos
 	Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
 	if(selectedEntity && m_GizmoType != -1)
 	{
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
-		const float windowWidth = ImGui::GetWindowWidth();
-		const float windowHeight = ImGui::GetWindowHeight();
-		ImGuizmo::SetRect(
-			ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+		ImGuizmo::SetRect(m_ViewportBounds[0].x,
+						  m_ViewportBounds[0].y,
+						  m_ViewportBounds[1].x - m_ViewportBounds[0].x,
+						  m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
 		// Runtime camera
 		// auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
