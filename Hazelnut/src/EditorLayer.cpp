@@ -306,6 +306,19 @@ void EditorLayer::OnEvent(Event& event)
 
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+	dispatcher.Dispatch<MouseButtonPressedEvent>(
+		HZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+}
+
+bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+{
+	if(event.GetMouseButton() == HZ_MOUSE_BUTTON_LEFT && !ImGuizmo::IsOver() &&
+	   !Input::IsKeyPressed(HZ_KEY_LEFT_ALT))
+	{
+		if(m_ViewportHovered) m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+	}
+
+	return false;
 }
 
 bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
