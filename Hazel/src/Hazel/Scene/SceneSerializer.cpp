@@ -177,6 +177,11 @@ void SceneSerializer::SerializeRuntime(const std::string& filepath)
 bool SceneSerializer::Deserialize(const std::string& filepath)
 {
 	std::ifstream stream(filepath);
+	if(!stream.is_open())
+	{
+		HZ_CORE_ERROR("Failed to load Scene {}", filepath);
+		return false;
+	}
 	std::stringstream strStream;
 	strStream << stream.rdbuf();
 
@@ -184,7 +189,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
 	if(!data["Scene"]) return false;
 
 	std::string sceneName = data["Scene"].as<std::string>();
-	HZ_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+	HZ_CORE_TRACE("Deserializing scene '{0}' from {1}", sceneName, filepath);
 
 	auto entities = data["Entities"];
 	if(entities)

@@ -1,14 +1,15 @@
 #include "EditorLayer.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
-
-#include <ImGuizmo.h>
-
 #include "Hazel/Math/Math.hpp"
 #include "Hazel/Scene/SceneSerializer.hpp"
 #include "Hazel/Utils/Utils.hpp"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
+#include <string>
+
+#include <ImGuizmo.h>
 
 namespace Hazel
 {
@@ -239,6 +240,34 @@ void EditorLayer::OnImGuiRender()
 				 ImVec2{0, 1},
 				 ImVec2{1, 0});
 
+	if(ImGui::BeginDragDropTarget())
+	{
+		if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		{
+// FIXME: Does this actually work as expected?
+#if defined HZ_PLATFORM_LINUX
+			const char* path = nullptr;
+			if(std::is_same_v<std::filesystem::path::value_type, char>)
+			{
+				path = reinterpret_cast<char*>(payload->Data);
+			}
+#elif defined HZ_PLATFORM_WINDOWS
+			const wchar_t* path = nullptr;
+			if(std::is_same_v<std::filesystem::path::value_type, wchar_t>)
+			{
+				path = reinterpret_cast<wchar_t*>(payload->Data);
+			}
+#else
+#	error "Unsupported platform"
+#endif
+			else { HZ_CORE_ASSERT(false, "Unexpected type"); }
+
+			// FIXME: Change how the path is handled
+			OpenScene(std::string(ASSET_PATH) + path);
+		}
+		ImGui::EndDragDropTarget();
+	}
+
 	// Gizmos
 	Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
 	if(selectedEntity && m_GizmoType != -1)
@@ -380,11 +409,15 @@ void EditorLayer::OpenScene()
 	const std::string filepath = FileDialogs::OpenFile("Hazel Scene", "hazel");
 	if(!filepath.empty())
 	{
-		NewScene();
-
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize(filepath);
+		OpenScene(filepath);
 	}
+}
+
+void EditorLayer::OpenScene(const std::filesystem::path& path)
+{
+	NewScene();
+	SceneSerializer serializer(m_ActiveScene);
+	serializer.Deserialize(path.string());
 }
 
 void EditorLayer::SaveSceneAs()

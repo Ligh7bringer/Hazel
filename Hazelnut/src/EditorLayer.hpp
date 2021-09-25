@@ -5,6 +5,8 @@
 #include "Panels/ContentBrowserPanel.hpp"
 #include "Panels/SceneHierarchyPanel.hpp"
 
+#include <filesystem>
+
 namespace Hazel
 {
 
@@ -27,6 +29,7 @@ private:
 
 	void NewScene();
 	void OpenScene();
+	void OpenScene(const std::filesystem::path& path);
 	void SaveSceneAs();
 
 private:

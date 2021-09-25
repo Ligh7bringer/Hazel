@@ -103,6 +103,11 @@
 namespace Hazel
 {
 
+// FIXME: Remove!
+#define ASSET_PATH "assets/"
+#define SCENE_PATH ASSET_PATH "scenes/"
+#define RESOURCE_PATH "resources/"
+
 template <typename T>
 using Scope = std::unique_ptr<T>;
 template <typename T, typename... Args>
