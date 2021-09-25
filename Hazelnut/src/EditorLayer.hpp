@@ -2,6 +2,7 @@
 
 #include "Hazel.hpp"
 #include "Hazel/Renderer/EditorCamera.hpp"
+#include "Panels/ContentBrowserPanel.hpp"
 #include "Panels/SceneHierarchyPanel.hpp"
 
 namespace Hazel
@@ -49,6 +50,7 @@ private:
 	bool m_ShouldSnap = false;
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
+	ContentBrowserPanel m_ContentBrowserPanel;
 };
 
 } // namespace Hazel
