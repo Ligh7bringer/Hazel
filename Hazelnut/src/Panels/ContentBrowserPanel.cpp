@@ -1,4 +1,5 @@
 #include "ContentBrowserPanel.hpp"
+#include "Hazel/Utils/Utils.hpp"
 
 #include <imgui.h>
 
@@ -54,34 +55,10 @@ void ContentBrowserPanel::OnImGuiRender()
 						   {0, 1},
 						   {1, 0});
 
-		const auto dotIdx = filename.rfind(".");
-		std::string extension{"none"};
-		if(dotIdx != std::string::npos)
-		{
-			extension = filename.substr(dotIdx, filename.size() - dotIdx);
-		}
-		if(extension == ".hazel" && ImGui::BeginDragDropSource())
+		if(ImGui::BeginDragDropSource())
 		{
 			const std::filesystem::path::value_type* itemPath = itemPath = relativePath.c_str();
-			size_t strSize = 0;
-			// FIXME: Refactor this
-#if defined HZ_PLATFORM_LINUX
-			if(std::is_same_v<std::filesystem::path::value_type, char>)
-			{
-				// Presumably char is used on Linux
-				strSize = (strlen(itemPath) + 1) * sizeof(char);
-			}
-#elif defined HZ_PLATFORM_WINDOWS
-			if(std::is_same_v<std::filesystem::path::value_type, wchar_t>)
-			{
-				// Presumably w_chr_t is used on Windows
-				strSize = (wcslen(itemPath) + 1) * sizeof(wchar_t);
-			}
-#else
-#	error "Unsupported platform"
-#endif
-			else { HZ_CORE_ASSERT(false, "Unsupported type"); }
-
+			const size_t strSize = Utils::StrSizeC(itemPath);
 			ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, strSize, ImGuiCond_Always);
 			ImGui::EndDragDropSource();
 		}

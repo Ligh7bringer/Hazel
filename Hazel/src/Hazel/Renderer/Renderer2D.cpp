@@ -350,7 +350,15 @@ void Renderer2D::DrawSprite(const glm::mat4& transform,
 							SpriteRendererComponent& spriteComp,
 							int entityID)
 {
-	DrawQuad(transform, spriteComp.Colour, entityID);
+	if(spriteComp.Texture)
+	{
+		DrawQuad(
+			transform, spriteComp.Texture, spriteComp.TilingFactor, spriteComp.Colour, entityID);
+	}
+	else
+	{
+		DrawQuad(transform, spriteComp.Colour, entityID);
+	}
 }
 
 void Renderer2D::ResetStats() { memset(&s_Data->Stats, 0, sizeof(Statistics)); }

@@ -7,6 +7,7 @@
 #include <utility>
 
 #include <array>
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <unordered_map>

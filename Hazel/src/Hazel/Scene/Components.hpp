@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
+#include "Hazel/Renderer/Texture.hpp"
+#include "SceneCamera.hpp"
+#include "ScriptableEntity.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <string>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-
-#include "SceneCamera.hpp"
-#include "ScriptableEntity.hpp"
 
 namespace Hazel
 {
@@ -48,6 +48,8 @@ struct TransformComponent
 struct SpriteRendererComponent
 {
 	glm::vec4 Colour{1.f, 1.f, 1.f, 1.f};
+	Ref<Texture2D> Texture;
+	float TilingFactor = 1.f;
 
 	SpriteRendererComponent() = default;
 	SpriteRendererComponent(const SpriteRendererComponent&) = default;

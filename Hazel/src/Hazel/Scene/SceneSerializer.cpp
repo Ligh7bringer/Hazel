@@ -176,6 +176,18 @@ void SceneSerializer::SerializeRuntime(const std::string& filepath)
 
 bool SceneSerializer::Deserialize(const std::string& filepath)
 {
+	const auto dotIdx = filepath.rfind(".");
+	std::string extension = "none";
+	if(dotIdx != std::string::npos)
+	{
+		extension = filepath.substr(dotIdx, filepath.size() - dotIdx);
+	}
+	if(extension != ".hazel")
+	{
+		HZ_CORE_WARN("Refusing to deserialize file with extension {}. Expected .hazel", extension);
+		return false;
+	}
+
 	std::ifstream stream(filepath);
 	if(!stream.is_open())
 	{

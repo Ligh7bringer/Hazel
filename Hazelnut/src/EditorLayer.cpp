@@ -8,7 +8,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <string>
-#include <filesystem>
 
 #include <ImGuizmo.h>
 
@@ -43,7 +42,7 @@ void EditorLayer::OnAttach()
 
 	m_EditorCamera = EditorCamera(30.f, 16.f / 9.f, 0.1f, 1000.f);
 
-	m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	m_SceneHierarchyPanel = SceneHierarchyPanel(m_ActiveScene);
 }
 
 void EditorLayer::OnDetach() { HZ_PROFILE_FUNCTION(); }
@@ -245,24 +244,7 @@ void EditorLayer::OnImGuiRender()
 	{
 		if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 		{
-// FIXME: Does this actually work as expected?
-#if defined HZ_PLATFORM_LINUX
-			const char* path = nullptr;
-			if(std::is_same_v<std::filesystem::path::value_type, char>)
-			{
-				path = reinterpret_cast<char*>(payload->Data);
-			}
-#elif defined HZ_PLATFORM_WINDOWS
-			const wchar_t* path = nullptr;
-			if(std::is_same_v<std::filesystem::path::value_type, wchar_t>)
-			{
-				path = reinterpret_cast<wchar_t*>(payload->Data);
-			}
-#else
-#	error "Unsupported platform"
-#endif
-			else { HZ_CORE_ASSERT(false, "Unexpected type"); }
-
+			const auto* path = reinterpret_cast<std::filesystem::path::value_type*>(payload->Data);
 			// FIXME: Change how the path is handled
 			OpenScene(std::filesystem::path(ASSET_PATH) / path);
 		}

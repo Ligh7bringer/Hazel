@@ -1,15 +1,19 @@
 #include "SceneHierarchyPanel.hpp"
+#include "Hazel/Scene/Components.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
-
-#include "Hazel/Scene/Components.hpp"
+#include <string>
 
 namespace Hazel
 {
 
-SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) { SetContext(context); }
+SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
+{
+	SetContext(context);
+	m_DefaultTexture = Texture2D::Create(RESOURCE_PATH "icons/checker.png");
+}
 
 void SceneHierarchyPanel::SetContext(const Ref<Scene>& context)
 {
@@ -344,9 +348,34 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
 		}
 	});
 
-	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component) -> void {
-		ImGui::ColorEdit4("Color", glm::value_ptr(component.Colour));
-	});
+	DrawComponent<SpriteRendererComponent>(
+		"Sprite Renderer", entity, [this](auto& component) -> void {
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Colour));
+
+			const auto textureId = component.Texture ? component.Texture->GetRendererID()
+													 : m_DefaultTexture->GetRendererID();
+			if(ImGui::ImageButton(reinterpret_cast<void*>(static_cast<size_t>(textureId)),
+								  ImVec2(100.f, 100.f),
+								  {0, 1},
+								  {1, 0}))
+			{
+				component.Texture = nullptr;
+			}
+
+			if(ImGui::BeginDragDropTarget())
+			{
+				if(const ImGuiPayload* payload =
+					   ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const auto* path =
+						reinterpret_cast<std::filesystem::path::value_type*>(payload->Data);
+					std::filesystem::path texturePath = std::filesystem::path(ASSET_PATH) / path;
+					component.Texture = Texture2D::Create(texturePath.string());
+				}
+			}
+
+			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.f, 100.f);
+		});
 }
 
 } // namespace Hazel
