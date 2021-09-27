@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <string>
+#include <filesystem>
 
 #include <ImGuizmo.h>
 
@@ -263,7 +264,7 @@ void EditorLayer::OnImGuiRender()
 			else { HZ_CORE_ASSERT(false, "Unexpected type"); }
 
 			// FIXME: Change how the path is handled
-			OpenScene(std::string(ASSET_PATH) + path);
+			OpenScene(std::filesystem::path(ASSET_PATH) / path);
 		}
 		ImGui::EndDragDropTarget();
 	}
