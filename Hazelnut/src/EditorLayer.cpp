@@ -36,6 +36,9 @@ void EditorLayer::OnAttach()
 	fbSpec.Height = 720;
 	m_Framebuffer = Framebuffer::Create(fbSpec);
 
+	m_IconPlay = Texture2D::Create(RESOURCE_PATH "icons/PlayButton.png");
+	m_IconStop = Texture2D::Create(RESOURCE_PATH "icons/StopButton.png");
+
 	m_CheckerTexture = Texture2D::Create("assets/textures/checker.png");
 
 	m_ActiveScene = MakeRef<Scene>();
@@ -63,14 +66,6 @@ void EditorLayer::OnUpdate(Timestep dt)
 										static_cast<uint32_t>(m_ViewportSize.y));
 	}
 
-	// Update camera
-	if(m_ViewportFocused)
-	{
-		m_CameraController.OnUpdate(dt);
-	}
-
-	m_EditorCamera.OnUpdate(dt);
-
 	// Render
 	Renderer2D::ResetStats();
 	m_Framebuffer->Bind();
@@ -79,7 +74,25 @@ void EditorLayer::OnUpdate(Timestep dt)
 
 	m_Framebuffer->ClearAttachment(1, -1);
 
-	m_ActiveScene->OnUpdateEditor(dt, m_EditorCamera);
+	switch(m_SceneState)
+	{
+	case SceneState::Edit: {
+		// Update camera
+		if(m_ViewportFocused)
+		{
+			m_CameraController.OnUpdate(dt);
+		}
+
+		m_EditorCamera.OnUpdate(dt);
+
+		m_ActiveScene->OnUpdateEditor(dt, m_EditorCamera);
+		break;
+	}
+	case SceneState::Play: {
+		m_ActiveScene->OnUpdateRuntime(dt);
+		break;
+	}
+	}
 
 	auto [mx, my] = ImGui::GetMousePos();
 	mx -= m_ViewportBounds[0].x;
@@ -309,6 +322,50 @@ void EditorLayer::OnImGuiRender()
 	ImGui::End();
 	ImGui::PopStyleVar();
 
+	UiToolbar();
+
+	ImGui::End();
+}
+
+void EditorLayer::UiToolbar()
+{
+	auto& colors = ImGui::GetStyle().Colors;
+	auto hoveredCol = colors[ImGuiCol_ButtonHovered];
+	hoveredCol.w = 0.5f;
+	auto activeCol = colors[ImGuiCol_ButtonActive];
+	activeCol.w = 0.5f;
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoveredCol);
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, activeCol);
+
+	ImGui::Begin("##toolbar",
+				 nullptr,
+				 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar |
+					 ImGuiWindowFlags_NoScrollWithMouse);
+
+	const auto rendererId = m_SceneState == SceneState::Edit ? m_IconPlay->GetRendererID()
+															 : m_IconStop->GetRendererID();
+	const float size = ImGui::GetWindowHeight() - 4.f;
+	ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+	if(ImGui::ImageButton(reinterpret_cast<void*>(static_cast<size_t>(rendererId)),
+						  ImVec2(size, size),
+						  ImVec2(0, 0),
+						  ImVec2(1, 1),
+						  0))
+	{
+		if(m_SceneState == SceneState::Edit)
+		{
+			OnScenePlay();
+		}
+		else if(m_SceneState == SceneState::Play)
+		{
+			OnSceneStop();
+		}
+	}
+	ImGui::PopStyleVar(2);
+	ImGui::PopStyleColor(3);
 	ImGui::End();
 }
 
@@ -412,5 +469,9 @@ void EditorLayer::SaveSceneAs()
 		serializer.Serialize(filepath);
 	}
 }
+
+void EditorLayer::OnScenePlay() { m_SceneState = SceneState::Play; }
+
+void EditorLayer::OnSceneStop() { m_SceneState = SceneState::Edit; }
 
 } // namespace Hazel

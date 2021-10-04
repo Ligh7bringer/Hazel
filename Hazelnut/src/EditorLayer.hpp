@@ -32,6 +32,12 @@ private:
 	void OpenScene(const std::filesystem::path& path);
 	void SaveSceneAs();
 
+	void OnScenePlay();
+	void OnSceneStop();
+
+	// UI
+	void UiToolbar();
+
 private:
 	OrthographicCameraController m_CameraController;
 	Ref<Texture2D> m_CheckerTexture;
@@ -54,6 +60,16 @@ private:
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 	ContentBrowserPanel m_ContentBrowserPanel;
+
+	Ref<Texture2D> m_IconPlay, m_IconStop;
+
+	enum class SceneState
+	{
+		Edit = 0,
+		Play = 1
+	};
+
+	SceneState m_SceneState = SceneState::Edit;
 };
 
 } // namespace Hazel
