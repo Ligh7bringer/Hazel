@@ -21,11 +21,15 @@ target_include_directories(imgui PUBLIC ${IMGUI_DIR} vendor/ImGuizmo)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/yaml-cpp)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/nfd)
 
+option(BOX2D_BUILD_TESTBED OFF)
+option(BOX2D_BUILD_UNIT_TESTS OFF)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/Box2d)
+
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 target_include_directories(
   Hazel
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${LIB_DIR}/GLFW/include
-          ${LIB_DIR}/stb_image
+          ${LIB_DIR}/stb_image ${LIB_DIR}/Box2d/include
   PUBLIC ${LIB_DIR}/glm ${LIB_DIR}/spdlog/include
          ${LIB_DIR}/entt/single_include ${LIB_DIR}/yaml-cpp/include
          ${LIB_DIR}/nfd/src/include)
@@ -40,7 +44,7 @@ target_precompile_headers(Hazel PUBLIC
 
 target_link_libraries(
   Hazel
-  PRIVATE glfw glad
+  PRIVATE glfw glad box2d
   PUBLIC imgui yaml-cpp::yaml-cpp nfd)
 
 set_target_properties(glfw glad imgui yaml-cpp nfd PROPERTIES FOLDER vendor)

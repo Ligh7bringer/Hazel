@@ -470,8 +470,16 @@ void EditorLayer::SaveSceneAs()
 	}
 }
 
-void EditorLayer::OnScenePlay() { m_SceneState = SceneState::Play; }
+void EditorLayer::OnScenePlay()
+{
+	m_ActiveScene->OnRuntimeStart();
+	m_SceneState = SceneState::Play;
+}
 
-void EditorLayer::OnSceneStop() { m_SceneState = SceneState::Edit; }
+void EditorLayer::OnSceneStop()
+{
+	m_ActiveScene->OnRuntimeStop();
+	m_SceneState = SceneState::Edit;
+}
 
 } // namespace Hazel

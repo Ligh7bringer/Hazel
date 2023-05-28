@@ -247,17 +247,22 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
 
 		if(ImGui::BeginPopup("AddComponent"))
 		{
-			if(ImGui::MenuItem("Camera"))
-			{
-				m_SelectionContext.AddComponent<CameraComponent>();
-				ImGui::CloseCurrentPopup();
-			}
+#define COMPONENT_CASE(LABEL, CMP_TYPE)                                                            \
+	if(!m_SelectionContext.HasComponent<CMP_TYPE>())                                               \
+	{                                                                                              \
+		if(ImGui::MenuItem(LABEL))                                                                 \
+		{                                                                                          \
+			m_SelectionContext.AddComponent<CMP_TYPE>();                                           \
+			ImGui::CloseCurrentPopup();                                                            \
+		}                                                                                          \
+	}
 
-			if(ImGui::MenuItem("Sprite Renderer"))
-			{
-				m_SelectionContext.AddComponent<SpriteRendererComponent>();
-				ImGui::CloseCurrentPopup();
-			}
+			COMPONENT_CASE("Camera", CameraComponent)
+			COMPONENT_CASE("Sprite Renderer", SpriteRendererComponent)
+			COMPONENT_CASE("Rigidbody 2D", Rigidbody2DComponent)
+			COMPONENT_CASE("Box Collider 2D", BoxCollider2DComponent)
+
+#undef COMPONENT_CASE
 
 			ImGui::EndPopup();
 		}
@@ -375,6 +380,43 @@ void SceneHierarchyPanel::DrawComponents(Entity entity)
 			}
 
 			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.f, 100.f);
+		});
+
+	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [this](auto& component) -> void {
+		constexpr size_t numBodyTypes = 3;
+		const char* bodyTypeStrings[] = {"Static", "Dynamic", "Kinematic"};
+		const char* currentBodyTypeString = bodyTypeStrings[static_cast<int>(component.Type)];
+		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
+		{
+			for(int i = 0; i < numBodyTypes; ++i)
+			{
+				const bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
+				if(ImGui::Selectable(bodyTypeStrings[i], isSelected))
+				{
+					currentBodyTypeString = bodyTypeStrings[i];
+					component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
+				}
+
+				if(isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Checkbox("Fixed rotation", &component.FixedRotation);
+	});
+
+	DrawComponent<BoxCollider2DComponent>(
+		"Box Collider 2D", entity, [this](auto& component) -> void {
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+			ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+			ImGui::DragFloat("Density", &component.Density, 0.01f, 0.f, 1.f);
+			ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.f, 1.f);
+			ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.f, 1.f);
+			ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.f);
 		});
 }
 
