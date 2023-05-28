@@ -3,6 +3,7 @@
 #include "Components.hpp"
 #include "Entity.hpp"
 #include "Hazel/Renderer/Renderer2D.hpp"
+#include "ScriptableEntity.hpp"
 
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
@@ -29,9 +30,12 @@ Scene::Scene() { }
 
 Scene::~Scene() { }
 
-Entity Scene::CreateEntity(const std::string& name)
+Entity Scene::CreateEntity(const std::string& name) { return CreateEntityWithUUID(UUID(), name); }
+
+Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 {
 	Entity entity = {m_Registry.create(), this};
+	entity.AddComponent<IDComponent>(uuid);
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
 	tag.Tag = name.empty() ? "Entity" : name;
@@ -217,6 +221,7 @@ DECLARE_ADD_COMPONENT_CALLBACK_STUB(TagComponent)
 DECLARE_ADD_COMPONENT_CALLBACK_STUB(NativeScriptComponent)
 DECLARE_ADD_COMPONENT_CALLBACK_STUB(Rigidbody2DComponent)
 DECLARE_ADD_COMPONENT_CALLBACK_STUB(BoxCollider2DComponent)
+DECLARE_ADD_COMPONENT_CALLBACK_STUB(IDComponent)
 
 #undef DECLARE_ADD_COMPONENT_CALLBACK_STUB
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Hazel/Core/UUID.hpp"
 #include "Hazel/Renderer/Texture.hpp"
 #include "SceneCamera.hpp"
-#include "ScriptableEntity.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,6 +13,14 @@
 
 namespace Hazel
 {
+
+struct IDComponent
+{
+	UUID ID;
+
+	IDComponent() = default;
+	IDComponent(const IDComponent&) = default;
+};
 
 struct TagComponent
 {
@@ -68,6 +76,7 @@ struct CameraComponent
 	CameraComponent(const CameraComponent&) = default;
 };
 
+class ScriptableEntity;
 struct NativeScriptComponent
 {
 	ScriptableEntity* Instance = nullptr;

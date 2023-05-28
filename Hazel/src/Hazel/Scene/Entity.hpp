@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "Components.hpp"
+#include "Hazel/Core/UUID.hpp"
 #include "Scene.hpp"
 
 #include "entt/entt.hpp"
@@ -50,6 +52,8 @@ public:
 
 	operator entt::entity() const { return m_EntityHandle; }
 	entt::entity GetEntityHandle() const { return m_EntityHandle; }
+
+	UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
 	bool operator==(const Entity& other) const
 	{

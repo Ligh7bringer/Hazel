@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hazel/Core/Timestep.hpp"
+#include "Hazel/Core/UUID.hpp"
 #include "Hazel/Renderer/EditorCamera.hpp"
 #include "SceneSerializer.hpp"
 
@@ -22,6 +23,7 @@ public:
 	~Scene();
 
 	Entity CreateEntity(const std::string& name = std::string());
+	Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 	void DestroyEntity(Entity entity);
 
 	void OnRuntimeStart();

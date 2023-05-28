@@ -1,42 +1,6 @@
 Scene: Untitled Scene
 Entities:
-  - Entity: 12312412
-    TagComponent:
-      Tag: Green Square
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0, 1, 0, 1]
-  - Entity: 12312412
-    TagComponent:
-      Tag: Red Square
-    TransformComponent:
-      Translation: [0, 1.89999998, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
-  - Entity: 12312412
-    TagComponent:
-      Tag: Camera A
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 12312412
+  - Entity: 1447638742407964574
     TagComponent:
       Tag: Camera B
     TransformComponent:
@@ -54,3 +18,39 @@ Entities:
         OrthographicFar: 1
       Primary: false
       FixedAspectRatio: false
+  - Entity: 15555085892126415660
+    TagComponent:
+      Tag: Camera A
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 15812318296029503499
+    TagComponent:
+      Tag: Red Square
+    TransformComponent:
+      Translation: [0, 1.89999998, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]
+  - Entity: 7557617490933406312
+    TagComponent:
+      Tag: Green Square
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0, 1, 0, 1]
