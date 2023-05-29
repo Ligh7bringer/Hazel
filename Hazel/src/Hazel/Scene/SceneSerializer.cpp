@@ -209,6 +209,7 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity)
 		out << YAML::Key << "BodyType" << YAML::Value
 			<< RigidBody2DBodyTypeToString(rb2dComponent.Type);
 		out << YAML::Key << "FixedRotation" << YAML::Value << rb2dComponent.FixedRotation;
+		out << YAML::EndMap;
 	}
 
 	if(entity.HasComponent<BoxCollider2DComponent>())
@@ -219,12 +220,12 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity)
 		auto& bc2dComponent = entity.GetComponent<BoxCollider2DComponent>();
 		out << YAML::Key << "Offset" << YAML::Value << bc2dComponent.Offset;
 		out << YAML::Key << "Size" << YAML::Value << bc2dComponent.Size;
-		out << YAML::Key << "Size" << YAML::Value << bc2dComponent.Size;
 		out << YAML::Key << "Density" << YAML::Value << bc2dComponent.Density;
 		out << YAML::Key << "Friction" << YAML::Value << bc2dComponent.Friction;
 		out << YAML::Key << "Restitution" << YAML::Value << bc2dComponent.Restitution;
 		out << YAML::Key << "RestitutionThreshold" << YAML::Value
 			<< bc2dComponent.RestitutionThreshold;
+		out << YAML::EndMap;
 	}
 
 	out << YAML::EndMap;
